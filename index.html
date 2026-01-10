@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Reading: Right or Wrong</title>
+  <style>
+    :root{
+      --bg:#0b1220;
+      --text:#eef3ff;
+      --muted:#a9b5d2;
+      --line:rgba(255,255,255,.12);
+
+      --shadow: 0 14px 40px rgba(0,0,0,.35);
+      --shadow2: 0 8px 18px rgba(0,0,0,.35);
+    }
+
+    *{box-sizing:border-box;}
+    html,body{height:100%;}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji";
+      background:
+        url("images/bg.png") center/cover no-repeat fixed,
+        radial-gradient(1200px 700px at 20% 0%, rgba(90,168,255,.14), transparent 55%),
+        radial-gradient(900px 600px at 90% 15%, rgba(49,210,139,.10), transparent 60%),
+        radial-gradient(900px 700px at 50% 110%, rgba(255,77,109,.10), transparent 60%),
+        var(--bg);
+      color:var(--text);
+      display:flex;
+      justify-content:center;
+      padding:18px;
+    }
+
+    .app{
+      width:min(980px, 100%);
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+      position: relative;
+      z-index: 1; /* above snow */
+    }
+
+    .top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:12px 14px;
+      border:1px solid var(--line);
+      background: #000;
+      border-radius:18px;
+      box-shadow: var(--shadow2);
+    }
+
+    .crests{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+
+    .crest-slot{
+      width:56px;
+      height:56px;
+      border-radius:14px;
+      border:1px dashed rgba(255,255,255,.26);
+      background: rgba(255,255,255,.04);
+      display:grid;
+      place-items:center;
+      overflow:hidden;
+    }
+
+    .crest-slot img{
+      width:100%;
+      height:100%;
+      object-fit:contain;
+      display:block;
+      opacity:.95;
+    }
+
+    .stats{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      align-items:center;
+    }
+
+    .pill{
+      padding:10px 12px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      border-radius:999px;
+      font-weight:700;
+      letter-spacing:.2px;
+      display:flex;
+      gap:8px;
+      align-items:baseline;
+      white-space:nowrap;
+    }
+    .pill span{color:var(--muted); font-weight:600; font-size:12px;}
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap:14px;
+    }
+
+    @media (max-width: 860px){
+      .grid{grid-template-columns:1fr;}
+      .stats{justify-content:flex-start;}
+    }
+
+    .card{
+      border:1px solid var(--line);
+      border-radius:22px;
+      background: #000;
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+
+    .card-head{
+      padding:14px 16px;
+      border-bottom:1px solid var(--line);
+      background: #000;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .title{
+      font-size:15px;
+      font-weight:800;
+      letter-spacing:.3px;
+    }
+
+    .controls{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:flex-end;
+    }
+
+    label{
+      font-size:12px;
+      color:var(--muted);
+      font-weight:700;
+      letter-spacing:.2px;
+    }
+
+    select, button{ font:inherit; }
+
+    select{
+      background: #000;
+      color: var(--text);
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:10px 12px;
+      outline:none;
+      font-weight:700;
+    }
+    select option{
+      background:#000;
+      color: var(--text);
+    }
+    select:focus{box-shadow: 0 0 0 3px rgba(90,168,255,.18);}
+
+    .big-area{
+      padding:20px 16px 16px;
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+      min-height:360px;
+    }
+
+    .word-box{
+      background: #070707;
+      border:1px solid rgba(255,255,255,.14);
+      border-radius:18px;
+      padding:18px 16px;
+      display:grid;
+      place-items:center;
+    }
+    .word-box.idle{
+      /* Ravenclaw-inspired blue backing for the idle message */
+      background: linear-gradient(180deg, rgba(24, 72, 170, .98), rgba(10, 35, 88, .98));
+      border-color: rgba(90,168,255,.45);
+    }
+
+    .word{
+      font-size: clamp(44px, 6.2vw, 78px);
+      font-weight: 900;
+      letter-spacing: .5px;
+      margin:0;
+      user-select:none;
+      text-align:center;
+      line-height:1.05;
+      text-shadow: 0 10px 26px rgba(0,0,0,.35);
+    }
+
+    .sub{
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.25;
+    }
+
+    .btn-row{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+    }
+
+    .btn{
+      border:1px solid rgba(255,255,255,.14);
+      border-radius:18px;
+      padding:14px 14px;
+      font-weight:900;
+      letter-spacing:.4px;
+      cursor:pointer;
+      user-select:none;
+      position:relative;
+      box-shadow: 0 14px 30px rgba(0,0,0,.35);
+      transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
+      overflow:hidden;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      font-size: 20px;
+      min-height:58px;
+      color:#fff;
+    }
+
+    .btn::before{
+      content:"";
+      position:absolute;
+      inset: 0;
+      background: radial-gradient(400px 120px at 30% 0%, rgba(255,255,255,.22), transparent 60%);
+      opacity:.7;
+      pointer-events:none;
+    }
+
+    .btn:active{ transform: translateY(2px) scale(.99); box-shadow: 0 10px 18px rgba(0,0,0,.35); filter: brightness(.98); }
+    .btn:focus{ outline:none; box-shadow: 0 0 0 3px rgba(90,168,255,.20), 0 14px 30px rgba(0,0,0,.35); }
+
+    .btn-good{
+      /* Slytherin-inspired */
+      background: linear-gradient(180deg, rgba(26, 156, 99, .98), rgba(9, 66, 44, .98));
+    }
+    .btn-bad{
+      /* Gryffindor-inspired */
+      background: linear-gradient(180deg, rgba(214, 33, 54, .98), rgba(102, 10, 22, .98));
+    }
+
+    .btn-secondary{
+      /* Hufflepuff-inspired: yellow + black */
+      background: linear-gradient(180deg, rgba(255, 204, 0, .98), rgba(204, 153, 0, .98));
+      border: 1px solid rgba(0,0,0,.55);
+      color: #0b1220;
+      box-shadow: 0 10px 18px rgba(0,0,0,.28);
+      border-radius:14px;
+      padding:10px 12px;
+      font-weight:900;
+      cursor:pointer;
+      transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-secondary::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background: radial-gradient(380px 120px at 30% 0%, rgba(255,255,255,.28), transparent 60%);
+      opacity:.8;
+      pointer-events:none;
+    }
+    .btn-secondary:active{ transform: translateY(1px); filter: brightness(.98); }
+    .btn-secondary:focus{ outline:none; box-shadow: 0 0 0 3px rgba(255, 204, 0, .22), 0 10px 18px rgba(0,0,0,.28); }
+
+    .action-buttons{ display:flex; gap:10px; flex-wrap:wrap; }
+
+    .row{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+
+    .progress{
+      height:10px;
+      background: #0b0b0b;
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:999px;
+      overflow:hidden;
+    }
+    .bar{
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, rgba(90,168,255,.9), rgba(49,210,139,.9));
+      transition: width .18s linear;
+    }
+
+    .log{
+      padding:0;
+      margin:0;
+      list-style:none;
+      max-height: 520px;
+      overflow:auto;
+    }
+
+    .log li{
+      padding:12px 14px;
+      border-bottom:1px solid rgba(255,255,255,.09);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      font-weight:800;
+      letter-spacing:.2px;
+      background: #050505;
+      animation: pop .18s ease-out;
+    }
+
+    .log li:last-child{ border-bottom:none; }
+
+    .tag{
+      font-size:12px;
+      font-weight:900;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      color: rgba(255,255,255,.92);
+    }
+
+    .ok{ color: rgba(49,210,139,.98); }
+    .no{ color: rgba(255,77,109,.98); }
+
+    .tag.ok{ background: rgba(49,210,139,.12); border-color: rgba(49,210,139,.30); }
+    .tag.no{ background: rgba(255,77,109,.12); border-color: rgba(255,77,109,.30); }
+
+    @keyframes pop{ from{ transform: translateY(4px); opacity:.0; } to{ transform: translateY(0); opacity:1; } }
+
+    .hint{
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.25;
+    }
+
+    .kbd{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size:12px;
+      padding:2px 6px;
+      border:1px solid rgba(255,255,255,.18);
+      border-bottom-color: rgba(255,255,255,.10);
+      border-radius:8px;
+      background: rgba(255,255,255,.06);
+      color: rgba(255,255,255,.92);
+      box-shadow: 0 3px 0 rgba(0,0,0,.22);
+    }
+
+    .disabled{
+      opacity:.55;
+      pointer-events:none;
+      filter:saturate(.85);
+    }
+
+    .flash{ animation: flash .14s ease-in; }
+    @keyframes flash{ from{ transform: scale(.995); } to{ transform: scale(1); } }
+
+    .log::-webkit-scrollbar{ width:10px; }
+    .log::-webkit-scrollbar-thumb{ background: rgba(255,255,255,.12); border-radius:999px; border:2px solid transparent; background-clip: content-box; }
+    .log::-webkit-scrollbar-track{ background: transparent; }
+
+    /* Snow layer behind the game */
+    .snow{
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .snow span{
+      position: absolute;
+      top: -10vh;
+      left: 0;
+      width: var(--s);
+      height: var(--s);
+      border-radius: 50%;
+      background: rgba(255,255,255,1);
+      filter: blur(0px);
+      box-shadow: 0 0 8px rgba(255,255,255,.35);
+      opacity: var(--o);
+      transform: translateX(var(--x));
+      animation: fall var(--d) linear infinite;
+    }
+    @keyframes fall{
+      to{ transform: translateX(var(--x)) translateY(120vh); }
+    }
+
+    /* Pattern toggles */
+    .toggles{ display:flex; gap:10px; flex-wrap:wrap; }
+    .toggle{
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.14);
+      background:#000;
+      color: rgba(255,255,255,.92);
+      font-weight:900;
+      cursor:pointer;
+      transition: transform .12s ease, filter .12s ease, box-shadow .12s ease;
+    }
+    .toggle:active{ transform: translateY(1px); filter: brightness(.98); }
+    .toggle.on{
+      border-color: rgba(90,168,255,.40);
+      box-shadow: 0 0 0 3px rgba(90,168,255,.18);
+    }
+    .toggle.util{
+      border-color: rgba(255,255,255,.22);
+      opacity:.95;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="snow" aria-hidden="true"></div>
+
+  <div class="app">
+
+    <div class="top">
+      <div class="crests" aria-label="Hogwarts crests">
+        <div class="crest-slot"><img alt="Gryffindor"  src="images/gryffindor.png"></div>
+        <div class="crest-slot"><img alt="Slytherin"   src="images/slytherin.png"></div>
+        <div class="crest-slot"><img alt="Hufflepuff"  src="images/hufflepuff.png"></div>
+        <div class="crest-slot"><img alt="Ravenclaw"   src="images/ravenclaw.png"></div>
+      </div>
+
+      <div class="stats">
+        <div class="pill" id="scorePill">Score: <strong id="score">0</strong></div>
+        <div class="pill">Right: <strong id="rightCount">0</strong> <span>R</span></div>
+        <div class="pill">Wrong: <strong id="wrongCount">0</strong> <span>W</span></div>
+        <div class="pill">Time: <strong id="timeLeft">—</strong></div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <!-- GAME -->
+      <div class="card">
+        <div class="card-head">
+          <div class="title">Reading: Right or Wrong</div>
+
+          <div class="controls">
+            <div>
+              <label>Patterns</label><br>
+              <div class="toggles" id="patternToggles"></div>
+            </div>
+
+            <div>
+              <label for="duration">Time</label><br>
+              <select id="duration">
+                <option value="30">30 sec</option>
+                <option value="60" selected>60 sec</option>
+                <option value="90">90 sec</option>
+              </select>
+            </div>
+
+            <div>
+              <label>&nbsp;</label><br>
+              <div class="action-buttons">
+                <button class="btn-secondary" id="startBtn" type="button">Start</button>
+                <button class="btn-secondary" id="resetBtn" type="button">Reset</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="big-area">
+          <div class="word-box" id="wordBox">
+            <h1 class="word" id="word">Press Start</h1>
+          </div>
+
+          <div class="progress" aria-label="Time progress">
+            <div class="bar" id="bar"></div>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn btn-good disabled" id="rightBtn" type="button" aria-label="Right">RIGHT</button>
+            <button class="btn btn-bad  disabled" id="wrongBtn" type="button" aria-label="Wrong">WRONG</button>
+          </div>
+
+          <div class="row">
+            <div class="sub" id="patternHint">Pattern: —</div>
+            <div class="hint">
+              Hotkeys:
+              <span class="kbd">R</span> Right,
+              <span class="kbd">W</span> Wrong,
+              <span class="kbd">Space</span> Start/Pause
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LOG -->
+      <div class="card">
+        <div class="card-head">
+          <div class="title">Answer history</div>
+          <div class="hint">Words below: <span class="ok">green</span> — Right, <span class="no">red</span> — Wrong.</div>
+        </div>
+        <ul class="log" id="log" aria-label="Word list"></ul>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ============================
+    // WORD LISTS (each group >= 40 words)
+    // ============================
+    const make = (arr, p) => arr.map(w => ({ w, p }));
+    const uniq = (arr) => arr.filter((v,i,a)=>a.indexOf(v)===i);
+
+    // CVC — 50
+    const WORDS_CVC = make([
+      "cat","bat","hat","mat","rat","cap","tap","map","nap","lap",
+      "bed","red","pen","hen","web","jet","set","pet","ten","men",
+      "pig","sit","pin","fin","kid","lid","hit","fit","rim","wig",
+      "dog","hot","box","fox","top","mop","rod","cot","log","fog",
+      "sun","cup","bus","rug","mud","bud","bug","hut","run","fun"
+    ], "CVC");
+
+    // a_e — 40
+    const WORDS_AE = make([
+      "cake","bake","lake","make","take","rake","fake","shake","snake","plate",
+      "gate","late","mate","date","rate","fate","hate","state","skate","crate",
+      "name","same","game","tame","flame","frame","brave","save","wave","cave",
+      "face","case","base","lace","race","place","space","grace","shape","tape"
+    ], "a_e");
+
+    // e_e — 40 (simple decodable set; duplicates removed)
+    const WORDS_EE_SPLIT = make(uniq([
+      "these","theme","here","mere","gene","scene","eve","even","complete","delete",
+      "compete","extreme","supreme","serene","athlete","severe","sincere","recede","precede","concrete",
+      "complete","delete","compete","extreme","supreme","serene","theme","these","here","mere",
+      "gene","scene","eve","even","severe","sincere","recede","precede","concrete","athlete"
+    ]).slice(0,40), "e_e");
+
+    // i_e — 40+
+    const WORDS_IE_SPLIT = make(uniq([
+      "like","bike","hike","kite","time","five","nine","line","mine","pine",
+      "ride","side","wide","hide","slide","smile","drive","stripe","prize","white",
+      "life","wife","pipe","ripe","site","bite","dive","mile","file","tile",
+      "while","shine","spine","price","slice","write","chime","spike","prime","glide",
+      "bride","crime","trite","shine","chime","spike","prime","glide","bride","crime"
+    ]).slice(0,45), "i_e");
+
+    // o_e — 40+
+    const WORDS_OE_SPLIT = make(uniq([
+      "home","rope","hope","bone","cone","tone","nose","rose","stone","stove",
+      "globe","probe","close","those","broke","chose","smoke","spoke","woke","drove",
+      "note","vote","code","mode","tote","slope","scope","robe","hole","pole",
+      "role","sole","joke","poke","phone","zone","dome","alone","store","before",
+      "shore","more","whole","stole","bore"
+    ]).filter(w=>w!=="whole").slice(0,42), "o_e"); // remove "whole" (often taught as tricky)
+
+    // u_e — 45
+    const WORDS_UE_SPLIT = make(uniq([
+      "cube","cute","tune","mule","use","fuse","tube","flute","prune","June",
+      "rule","rude","dune","duke","brute","mute","refuse","excuse","amuse","acute",
+      "include","reduce","produce","bugle","dupe","lute","rune","pure","cure","secure",
+      "ensure","future","nature","mixture","adventure","picture","capture","texture","feature","failure",
+      "measure","treasure","closure","figure","gesture"
+    ]).slice(0,45), "u_e");
+
+    // ee — 45
+    const WORDS_EE = make(uniq([
+      "see","bee","tree","free","green","seed","need","feed","weed","week",
+      "meet","feet","sweet","sheet","sheep","sleep","deep","keep","peel","feel",
+      "teen","seen","seek","peek","cheek","teeth","heel","steel","speed","greed",
+      "bleed","creep","steep","beep","jeep","screen","between","seem","queen","cheese",
+      "freeze","breeze","agree","three","fifteen"
+    ]).slice(0,45), "ee");
+
+    // ie — 40 (kept mostly /aɪ/ with -ie/-ies forms)
+    const WORDS_IE = make(uniq([
+      "pie","pies","tie","ties","tied","tying","lie","lies","lied","lying",
+      "die","dies","died","dying","vie","vies","vied","vying",
+      "cries","cried","tries","tried","flies","flied","spies","spied",
+      "dries","dried","pries","pried","fries","fried","plies","plied",
+      "skies","skied","untie","unties","untied","untying"
+    ]).slice(0,40), "ie");
+
+    // oe — 40 (avoid "shoe/shoes/does")
+    const WORDS_OE = make(uniq([
+      "toe","toes","toed","toeing","foe","foes","roe","roes","woe","woes",
+      "hoe","hoes","sloe","sloes","floe","floes","throe","throes",
+      "canoe","canoes","canoed","canoeing","oboe","oboes","oboeist","oboeists",
+      "toenail","toenails","toehold","toeholds","toeline","toelines",
+      "foehold","foeholds","roe deer","roebuck","roebucks","toed"
+    ].map(x=>String(x).replace(" ",""))).slice(0,40), "oe");
+
+    // ue — 40
+    const WORDS_UE = make(uniq([
+      "blue","blues","bluer","bluest","bluing","clue","clues","clued","cluing","glue",
+      "glues","glued","gluing","true","truer","truest","due","dues","sue","sues",
+      "sued","suing","hue","hues","rue","rues","rued","ruing","cue","cues",
+      "cued","cuing","rescue","rescues","rescued","rescuing","statue","statues","issue","issues"
+    ]).slice(0,40), "ue");
+
+    // qu — 45
+    const WORDS_QU = make(uniq([
+      "quiz","quit","quill","quick","quilt","quack","quench","queen","queens","quest",
+      "quiet","quite","quake","quakes","quaked","quaking","quote","quotes","quoted","quoting",
+      "quarter","quarters","quartz","quality","quantity","question","questions","request","requests","require",
+      "squeak","squeaks","squeaked","squeaking","squid","squids","squish","squishes","squished","squishing",
+      "equal","equals","equate","equator","sequence"
+    ]).slice(0,45), "qu");
+
+    // aw — 40
+    const WORDS_AW = make(uniq([
+      "saw","saws","sawed","sawing","raw","jaw","law","paw","claw","draw",
+      "straw","crawl","dawn","yawn","lawn","hawk","squawk","flaw","thaw","shawl",
+      "awful","awesome","awkward","lawful","drawn","drawer","jawbone","pawprint",
+      "claws","draws","drawing","thaws","lawns","hawks","flaws","paws","strawberry","withdraw"
+    ]).slice(0,40), "aw");
+
+    // al — 40
+    const WORDS_AL = make(uniq([
+      "all","ball","call","fall","hall","mall","tall","wall","stall","small",
+      "walk","walks","walked","walking","talk","talks","talked","talking","chalk","chalks",
+      "chalked","chalky","stalk","stalks","stalked","stalking","balk","balks","balked","balking",
+      "calm","calms","calmed","calming","palm","palms","palmed","palming","half","halves"
+    ]).slice(0,40), "al");
+
+    // au — 40
+    const WORDS_AU = make(uniq([
+      "haul","hauls","hauled","hauling","fault","faults","faulted","gaunt","haunt","haunts",
+      "haunted","haunting","cause","causes","caused","causing","pause","pauses","paused","pausing",
+      "sauce","sauces","launch","launches","launched","launching","author","authors","autumn","audit",
+      "audits","audited","audio","audience","August","auction","auctions","vault","vaults","vaulted"
+    ]).slice(0,40), "au");
+
+    // ou — 45 (mainly /aʊ/)
+    const WORDS_OU = make(uniq([
+      "out","outs","shout","shouts","shouted","shouting","loud","louder","loudest","cloud",
+      "clouds","cloudy","round","rounds","rounded","rounding","sound","sounds","sounded","sounding",
+      "found","count","counts","counted","counting","mount","mounts","mounted","mounting","house",
+      "houses","mouse","mice","south","mouth","pound","pounds","pounded","pounding","ground",
+      "grounds","grounded","clown","crown","crowns","town"
+    ]).slice(0,45), "ou");
+
+    // wr — 40 (avoid "wrote")
+    const WORDS_WR = make(uniq([
+      "wrap","wraps","wrapped","wrapping","wreck","wrecks","wrecked","wrecking","wrist","wrists",
+      "write","writes","writing","writer","writers","wrong","wring","wrings","wrung","wringing",
+      "wrench","wrenches","wrenched","wrenching","wrinkle","wrinkles","wrinkled","wrinkling","wreath","wreaths",
+      "wrestle","wrestles","wrestled","wrestling","wrath","wry","wrens","wraparound","wren","wretched"
+    ]).slice(0,40), "wr");
+
+    // ph — 45 (kept common)
+    const WORDS_PH = make(uniq([
+      "phone","phones","phoned","phoning","photo","photos","photograph","photographs","graph","graphs",
+      "phrase","phrases","phonics","alphabet","elephant","dolphin","trophy","trophies","sphinx","pharmacy",
+      "physical","physics","philosophy","pheasant","phase","phases","photon","phoneme","phobia","phonetic",
+      "sapphire","nephew","triumph","triumphs","triumphant","pamphlet","symphony","sympathy","telephone","telephones",
+      "microphone","headphones","phonics","photobook","photoframe"
+    ]).slice(0,45), "ph");
+
+    // kn — 40 (avoid "know/known")
+    const WORDS_KN = make(uniq([
+      "knit","knits","knitted","knitting","knot","knots","knotted","knotting","knee","knees",
+      "kneel","kneels","kneeled","kneeling","knife","knives","knock","knocks","knocked","knocking",
+      "knob","knobs","knuckle","knuckles","knuckled","knuckling","knave","knaves","knell","knells",
+      "knelt","knight","knights","kneecap","kneecaps","knapsack","knapsacks","knotwork","knitwear","knittingly"
+    ]).slice(0,40), "kn");
+
+    // ============================
+    // NEW PATTERNS: th, ng, sh, ch, rh, wh (each >= 40)
+    // ============================
+
+    // th — 45 (mixed voiced/unvoiced, but decodable)
+    const WORDS_TH = make(uniq([
+      "thin","thick","thank","think","thumb","thump","thud","thrush","thrift","thrive",
+      "three","threw","throw","throws","throwing","thread","threads","threat","threats","throat",
+      "bath","baths","path","paths","math","moth","moths","both","with","cloth",
+      "clothes","cloths","teeth","tooth","tooths","toothbrush","north","south","fourth","tenth",
+      "thirty","thirst","thirsty","thunder","thunders"
+    ]).slice(0,45), "th");
+
+    // ng — 45 (focus on clear -ng /ŋ/)
+    const WORDS_NG = make(uniq([
+      "ring","rings","ringing","king","kings","wing","wings","sing","sings","singing",
+      "thing","things","long","longer","longest","song","songs","bang","bangs","banging",
+      "hang","hangs","hanging","lung","lungs","hung","young","youngest","strong","stronger",
+      "string","strings","stringing","bring","brings","bringing","wrong","wrongs","wronging","sling",
+      "slings","slinging","along","among","songbird"
+    ]).slice(0,45), "ng");
+
+    // sh — 45
+    const WORDS_SH = make(uniq([
+      "ship","ships","shop","shops","shut","shuts","shell","shelf","shark","sharks",
+      "shake","shakes","shaking","shine","shines","shining","short","shirt","sharp","shape",
+      "sheep","sheet","sheets","shellfish","fish","dish","dishes","wish","wishes","wished",
+      "washing","wash","washes","washed","brush","brushes","brushed","crash","crashes","crashed",
+      "flash","flashes","flashlight","trash","splash"
+    ]).slice(0,45), "sh");
+
+    // ch — 45
+    const WORDS_CH = make(uniq([
+      "chin","chat","chats","chip","chips","chop","chops","chopped","chopping","chess",
+      "check","checks","checked","checking","chicken","chickens","chair","chairs","cheer","cheers",
+      "cheered","cheering","cherry","cherries","cheese","chalk","chase","chases","chased","chasing",
+      "bench","benches","lunch","lunches","bunch","bunches","rich","much","such","pitch",
+      "pitcher","match","matches","matched","matching"
+    ]).slice(0,45), "ch");
+
+    // wh — 45 (avoid "who/whole" as tricky)
+    const WORDS_WH = make(uniq([
+      "what","when","where","which","while","white","whale","whales","wheel","wheels",
+      "whip","whips","whipped","whipping","whisk","whisks","whisked","whisking","whisper","whispers",
+      "whispered","whispering","whistle","whistles","whistled","whistling","whack","whacks","whacked","whacking",
+      "wheat","whenever","wherever","whatever","whichever","whim","whims","whimsy","whiny","whine",
+      "whines","whined","whining","wharf","wharfs"
+    ]).filter(w => w!=="who" && w!=="whole").slice(0,45), "wh");
+	
+    // ============================
+    // GROUPS + TOGGLES (select any combination)
+    // ============================
+    const GROUPS = [
+      { key:"cvc", label:"CVC", words: WORDS_CVC },
+
+      { key:"a_e", label:"a_e", words: WORDS_AE },
+      { key:"e_e", label:"e_e", words: WORDS_EE_SPLIT },
+      { key:"i_e", label:"i_e", words: WORDS_IE_SPLIT },
+      { key:"o_e", label:"o_e", words: WORDS_OE_SPLIT },
+      { key:"u_e", label:"u_e", words: WORDS_UE_SPLIT },
+
+      { key:"ee",  label:"ee",  words: WORDS_EE },
+      { key:"ie",  label:"ie",  words: WORDS_IE },
+      { key:"oe",  label:"oe",  words: WORDS_OE },
+      { key:"ue",  label:"ue",  words: WORDS_UE },
+
+      { key:"qu",  label:"qu",  words: WORDS_QU },
+
+      { key:"aw",  label:"aw",  words: WORDS_AW },
+      { key:"al",  label:"al",  words: WORDS_AL },
+      { key:"au",  label:"au",  words: WORDS_AU },
+      { key:"ou",  label:"ou",  words: WORDS_OU },
+      { key:"wr",  label:"wr",  words: WORDS_WR },
+      { key:"ph",  label:"ph",  words: WORDS_PH },
+      { key:"kn",  label:"kn",  words: WORDS_KN },
+
+      // NEW:
+      { key:"th",  label:"th",  words: WORDS_TH },
+      { key:"ng",  label:"ng",  words: WORDS_NG },
+      { key:"sh",  label:"sh",  words: WORDS_SH },
+      { key:"ch",  label:"ch",  words: WORDS_CH },
+      { key:"wh",  label:"wh",  words: WORDS_WH },
+    ];
+
+    // Safety check: each group must be >= 40
+    GROUPS.forEach(g=>{
+      if (g.words.length < 40) console.warn(`Group ${g.key} has ${g.words.length} words (need >= 40)`);
+    });
+
+    const selectedGroups = new Set(GROUPS.map(g=>g.key)); // default: all ON
+
+    // ============================
+    // STATE
+    // ============================
+    const els = {
+      duration: document.getElementById('duration'),
+      startBtn: document.getElementById('startBtn'),
+      resetBtn: document.getElementById('resetBtn'),
+      rightBtn: document.getElementById('rightBtn'),
+      wrongBtn: document.getElementById('wrongBtn'),
+      word: document.getElementById('word'),
+      wordBox: document.getElementById('wordBox'),
+      patternHint: document.getElementById('patternHint'),
+      log: document.getElementById('log'),
+      score: document.getElementById('score'),
+      rightCount: document.getElementById('rightCount'),
+      wrongCount: document.getElementById('wrongCount'),
+      timeLeft: document.getElementById('timeLeft'),
+      bar: document.getElementById('bar'),
+      toggles: document.getElementById('patternToggles'),
+    };
+
+    let running = false;
+    let paused = false;
+    let t = null;
+    let totalSeconds = 60;
+    let remaining = 60;
+
+    let current = null;      // {w,p}
+    let lastWord = "";
+
+    let score = 0;           // = number of RIGHT answers
+    let rightCount = 0;
+    let wrongCount = 0;
+
+    // ============================
+    // TOGGLES UI
+    // ============================
+    function renderToggles(){
+      els.toggles.innerHTML = "";
+
+      const mkBtn = (text, cls, onClick) => {
+        const b = document.createElement('button');
+        b.type = "button";
+        b.className = `toggle ${cls || ""}`.trim();
+        b.textContent = text;
+        b.onclick = onClick;
+        return b;
+      };
+
+      els.toggles.appendChild(mkBtn("ALL", "util", () => {
+        GROUPS.forEach(g=>selectedGroups.add(g.key));
+        renderToggles();
+      }));
+      els.toggles.appendChild(mkBtn("NONE", "util", () => {
+        selectedGroups.clear();
+        renderToggles();
+      }));
+
+      GROUPS.forEach(g=>{
+        const on = selectedGroups.has(g.key);
+        els.toggles.appendChild(mkBtn(g.label, on ? "on" : "", () => {
+          if (selectedGroups.has(g.key)) selectedGroups.delete(g.key);
+          else selectedGroups.add(g.key);
+          renderToggles();
+        }));
+      });
+    }
+
+    function getActivePool(){
+      const pool = [];
+      GROUPS.forEach(g=>{
+        if (selectedGroups.has(g.key)) pool.push(...g.words);
+      });
+      return pool;
+    }
+
+    // ============================
+    // HELPERS
+    // ============================
+    function setButtonsEnabled(on){
+      const cls = 'disabled';
+      els.rightBtn.classList.toggle(cls, !on);
+      els.wrongBtn.classList.toggle(cls, !on);
+    }
+
+    function fmtTime(s){
+      const mm = Math.floor(s/60);
+      const ss = s%60;
+      if (mm <= 0) return `${ss}s`;
+      return `${mm}:${String(ss).padStart(2,'0')}`;
+    }
+
+    function chooseNextWord(){
+      const pool = getActivePool();
+      if (!pool.length) return { w: "Select patterns", p: "—" };
+
+      let pick = pool[Math.floor(Math.random()*pool.length)];
+      for (let i=0; i<12 && pick.w === lastWord; i++){
+        pick = pool[Math.floor(Math.random()*pool.length)];
+      }
+      lastWord = pick.w;
+      return pick;
+    }
+
+    function showWord(obj){
+      current = obj;
+      els.wordBox.classList.remove('flash');
+      void els.wordBox.offsetWidth;
+      els.word.textContent = obj.w;
+      els.patternHint.textContent = `Pattern: ${obj.p}`;
+      els.wordBox.classList.add('flash');
+    }
+
+    function addLogItem(word, ok){
+      const li = document.createElement('li');
+      li.className = ok ? 'ok' : 'no';
+
+      const left = document.createElement('div');
+      left.textContent = word;
+
+      const tag = document.createElement('div');
+      tag.className = `tag ${ok ? 'ok' : 'no'}`;
+      tag.textContent = ok ? 'RIGHT' : 'WRONG';
+
+      li.appendChild(left);
+      li.appendChild(tag);
+      els.log.prepend(li);
+    }
+
+    function updateStats(){
+      els.score.textContent = String(score);
+      els.rightCount.textContent = String(rightCount);
+      els.wrongCount.textContent = String(wrongCount);
+      els.timeLeft.textContent = running ? fmtTime(remaining) : '—';
+
+      const pct = totalSeconds > 0 ? ((totalSeconds - remaining) / totalSeconds) * 100 : 0;
+      els.bar.style.width = `${Math.min(100, Math.max(0, pct))}%`;
+    }
+
+    function endGame(){
+      running = false;
+      paused = false;
+      clearInterval(t);
+      t = null;
+      setButtonsEnabled(false);
+      els.startBtn.textContent = 'Start';
+      els.word.textContent = "Time's up!";
+      els.patternHint.textContent = 'Pattern: —';
+      els.wordBox.classList.add('idle');
+      updateStats();
+    }
+
+    function tick(){
+      if (!running || paused) return;
+      remaining -= 1;
+      if (remaining <= 0){
+        remaining = 0;
+        updateStats();
+        endGame();
+        return;
+      }
+      updateStats();
+    }
+
+    // ============================
+    // GAME CONTROL
+    // ============================
+    function startGame(){
+      const pool = getActivePool();
+      if (!pool.length){
+        els.word.textContent = "Select patterns";
+        els.patternHint.textContent = "Pattern: —";
+        els.wordBox.classList.add('idle');
+        setButtonsEnabled(false);
+        return;
+      }
+
+      els.wordBox.classList.remove('idle');
+
+      totalSeconds = Number(els.duration.value);
+      remaining = totalSeconds;
+      running = true;
+      paused = false;
+
+      score = 0;
+      rightCount = 0;
+      wrongCount = 0;
+      lastWord = "";
+      els.log.innerHTML = '';
+
+      setButtonsEnabled(true);
+      els.startBtn.textContent = 'Pause';
+
+      showWord(chooseNextWord());
+      updateStats();
+
+      clearInterval(t);
+      t = setInterval(tick, 1000);
+    }
+
+    function togglePause(){
+      if (!running){
+        startGame();
+        return;
+      }
+      paused = !paused;
+      els.startBtn.textContent = paused ? 'Resume' : 'Pause';
+      els.word.textContent = paused ? 'Paused' : (current?.w ?? '—');
+      updateStats();
+    }
+
+    function resetAll(){
+      running = false;
+      paused = false;
+      clearInterval(t);
+      t = null;
+
+      score = 0;
+      rightCount = 0;
+      wrongCount = 0;
+      lastWord = "";
+      current = null;
+
+      els.log.innerHTML = '';
+      els.word.textContent = 'Press Start';
+      els.wordBox.classList.add('idle');
+      els.patternHint.textContent = 'Pattern: —';
+      els.startBtn.textContent = 'Start';
+      setButtonsEnabled(false);
+      els.bar.style.width = '0%';
+      els.timeLeft.textContent = '—';
+      updateStats();
+    }
+
+    function answer(ok){
+      if (!running || paused || !current) return;
+
+      addLogItem(current.w, ok);
+
+      if (ok){
+        rightCount += 1;
+        score += 1;
+      } else {
+        wrongCount += 1;
+      }
+
+      showWord(chooseNextWord());
+      updateStats();
+    }
+
+    // ============================
+    // SNOW
+    // ============================
+    const snow = document.querySelector('.snow');
+    const FLAKES = 60;
+
+    for(let i=0;i<FLAKES;i++){
+      const f = document.createElement('span');
+      const size = Math.random()*8 + 6;
+      const x = Math.random()*100;
+      const dur = Math.random()*8 + 7;
+      const delay = -Math.random()*dur;
+      const opacity = Math.random()*0.35 + 0.65;
+
+      f.style.setProperty('--s', size + 'px');
+      f.style.setProperty('--x', x + 'vw');
+      f.style.setProperty('--d', dur + 's');
+      f.style.setProperty('--o', opacity);
+      f.style.animationDelay = delay + 's';
+
+      snow.appendChild(f);
+    }
+
+    // ============================
+    // EVENTS
+    // ============================
+    els.startBtn.addEventListener('click', togglePause);
+    els.resetBtn.addEventListener('click', resetAll);
+    els.rightBtn.addEventListener('click', () => answer(true));
+    els.wrongBtn.addEventListener('click', () => answer(false));
+
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'Space'){
+        e.preventDefault();
+        togglePause();
+      }
+      if (e.key.toLowerCase() === 'r') answer(true);
+      if (e.key.toLowerCase() === 'w') answer(false);
+    });
+
+    // Init
+    renderToggles();
+    resetAll();
+  </script>
+</body>
+</html>

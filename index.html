@@ -185,7 +185,6 @@
       place-items:center;
     }
     .word-box.idle{
-      /* Ravenclaw-inspired blue backing for the idle message */
       background: linear-gradient(180deg, rgba(24, 72, 170, .98), rgba(10, 35, 88, .98));
       border-color: rgba(90,168,255,.45);
     }
@@ -247,16 +246,13 @@
     .btn:focus{ outline:none; box-shadow: 0 0 0 3px rgba(90,168,255,.20), 0 14px 30px rgba(0,0,0,.35); }
 
     .btn-good{
-      /* Slytherin-inspired */
       background: linear-gradient(180deg, rgba(26, 156, 99, .98), rgba(9, 66, 44, .98));
     }
     .btn-bad{
-      /* Gryffindor-inspired */
       background: linear-gradient(180deg, rgba(214, 33, 54, .98), rgba(102, 10, 22, .98));
     }
 
     .btn-secondary{
-      /* Hufflepuff-inspired: yellow + black */
       background: linear-gradient(180deg, rgba(255, 204, 0, .98), rgba(204, 153, 0, .98));
       border: 1px solid rgba(0,0,0,.55);
       color: #0b1220;
@@ -375,7 +371,6 @@
     .log::-webkit-scrollbar-thumb{ background: rgba(255,255,255,.12); border-radius:999px; border:2px solid transparent; background-clip: content-box; }
     .log::-webkit-scrollbar-track{ background: transparent; }
 
-    /* Snow layer behind the game */
     .snow{
       position: fixed;
       inset: 0;
@@ -401,7 +396,6 @@
       to{ transform: translateX(var(--x)) translateY(120vh); }
     }
 
-    /* Pattern toggles */
     .toggles{ display:flex; gap:10px; flex-wrap:wrap; }
     .toggle{
       padding:10px 12px;
@@ -412,16 +406,18 @@
       font-weight:900;
       cursor:pointer;
       transition: transform .12s ease, filter .12s ease, box-shadow .12s ease;
+      user-select:none;
     }
     .toggle:active{ transform: translateY(1px); filter: brightness(.98); }
     .toggle.on{
       border-color: rgba(90,168,255,.40);
       box-shadow: 0 0 0 3px rgba(90,168,255,.18);
     }
-    .toggle.util{
-      border-color: rgba(255,255,255,.22);
-      opacity:.95;
+    .toggle.locked{
+      cursor: default;
+      opacity: .78;
     }
+    .toggle.locked:active{ transform:none; filter:none; }
   </style>
 </head>
 <body>
@@ -447,7 +443,6 @@
     </div>
 
     <div class="grid">
-      <!-- GAME -->
       <div class="card">
         <div class="card-head">
           <div class="title">Reading: Right or Wrong</div>
@@ -504,7 +499,6 @@
         </div>
       </div>
 
-      <!-- LOG -->
       <div class="card">
         <div class="card-head">
           <div class="title">Answer history</div>
@@ -517,10 +511,49 @@
 
   <script>
     // ============================
-    // WORD LISTS (each group >= 40 words)
+    // WORD LISTS
     // ============================
     const make = (arr, p) => arr.map(w => ({ w, p }));
     const uniq = (arr) => arr.filter((v,i,a)=>a.indexOf(v)===i);
+
+    // PSEUDO words are allowed and are used ONLY when ONE pattern is selected (besides CVC).
+    const PSEUDO = {
+      a_e:["nape","vame","labe","tase","pate","dake","rane","caze","mave","kase","wate","hase","bame","dape","zate","jape","gape","sate","fape","tape"],
+      e_e:["sene","fere","mene","rebe","tede","peme","neve","kene","beme","reme","lepe","zene","feme","heve","dese","tefe","seke","peve","mege","vele"],
+      i_e:["nime","vile","mife","tibe","sipe","rife","kive","jite","lize","fipe","hime","pive","mive","zine","gike","bive","tine","wive","dime","sine"],
+      o_e:["nobe","vone","mote","tobe","sote","dobe","lome","gote","pome","kone","jote","fobe","zote","hobe","rone","bome","cobe","vode","mone","tome"],
+      u_e:["nube","vute","mune","tuke","sute","dune","lute","gube","pune","kute","june","fute","zune","hune","rube","bute","cune","vune","mube","tune"],
+
+      ee:["meep","teek","neem","seeg","feen","greep","bleen","sheev","preel","treem","cheem","sleed","steem","weef","dreek","veem","speen","neep","jeen","leek"],
+      ie:["pien","tiel","lien","mien","kien","zien","vied","fies","plien","brien","slied","grien","tien","mien","kied","zied","pried","tried","dried","flied"],
+      oe:["foe","roe","boe","toed","foes","roes","toes","hoed","toen","foen","roen","boen","toef","roef","foef","boef","joes","koes","loes","noes"],
+      ue:["plue","grue","flue","clued","glued","blued","trued","huing","ruing","suing","cuing","truing","gluing","cluing","bluish","trueish","hued","rued","sued","cued"],
+
+      qu:["quab","quep","quim","quop","quut","quemp","quost","squeg","squop","squut","quaff","quolt","quark","quern","quill","quilt","quisk","quash","quend","quand"],
+
+      aw:["nawl","braw","tawn","zawn","plawn","smaw","clawn","drall","graw","thawn","cawn","praw","jawl","traw","blawn","strawn","shawn","rawn","dawn","yawn"],
+      al:["talm","yalk","valk","zalk","kalm","salp","talp","dalp","galm","walp","malf","calf","halm","palm","balm","salv","walm","balk","talk","walk"],
+      au:["taul","faul","gaud","haud","daul","saul","vaul","zaul","rauf","sauf","paus","laun","caun","gaun","haun","daun","maul","haul","fault","pause"],
+      ou:["mout","sout","lound","tound","gound","vout","zout","shound","plound","bround","dround","houn","foun","roun","clout","flout","sprout","stout","round","sound"],
+
+      wr:["wrab","wrep","wrim","wrok","wrup","wreft","wrindle","wrenk","wrack","wreel","wrang","wronk","wrent","wretch","wready","wristle","wraph","wrush","wrisk","wramp"],
+      ph:["phap","phep","phim","phop","phut","phane","phote","photal","phograph","phonic","phur","phest","phene","phore","phaser","photeen","phoned","phogram","phabic","phoric"],
+      kn:["knab","knep","knim","knop","knut","knall","knash","knill","knost","knarf","knilk","knamp","knish","knerd","kniff","knuff","knand","knold","knarp","knass"],
+
+      th:["thav","thim","thop","thun","thesh","thint","thrum","thrad","thlump","thrist","thand","thock","tharth","thent","tholt","thame","thove","thure","thind","thusk"],
+      sh:["shab","shep","shim","shop","shut","shafe","shome","shipe","shote","shune","shank","shend","shind","shond","shund","sharf","sherb","shirf","shorf","shurf"],
+      ch:["chab","chep","chim","chop","chut","chake","chome","chipe","chote","chune","chank","chend","chind","chond","chund","cherf","chirf","chorf","churf","chest"],
+      ng:["zong","fang","hing","mang","pong","rung","tung","vang","wung","zing","clong","flang","prong","strang","thung","plung","snang","brung","dring","gling"],
+      wh:["whap","whep","whim","whop","whut","whote","whune","whend","whint","whond","whund","whisp","whush","whack","whomp","wharf","whirl","whine","wheat","wheel"],
+
+      ar:["zarf","marb","tarb","larp","garp","narb","harf","jarb","carf","parn","tarm","darp","farn","barm","garn","zarn","sark","wark","lark","spark"],
+      or:["zorn","lork","torm","morb","sorf","gorn","tork","vorn","dorb","bort","corm","dorn","forb","hork","jort","korn","lorn","morn","porm","sorn"],
+      r3:["birn","gerp","nurv","firb","terg","hurm","sirn","derp","kurm","verp","jirb","lerg","murv","pirn","serp","turm","wirn","zerp","yurm","xirn"]
+    };
+
+    // ============================
+    // REAL WORD LISTS (your earlier groups kept + new ones added)
+    // ============================
 
     // CVC — 50
     const WORDS_CVC = make([
@@ -539,7 +572,7 @@
       "face","case","base","lace","race","place","space","grace","shape","tape"
     ], "a_e");
 
-    // e_e — 40 (simple decodable set; duplicates removed)
+    // e_e — 40
     const WORDS_EE_SPLIT = make(uniq([
       "these","theme","here","mere","gene","scene","eve","even","complete","delete",
       "compete","extreme","supreme","serene","athlete","severe","sincere","recede","precede","concrete",
@@ -547,31 +580,31 @@
       "gene","scene","eve","even","severe","sincere","recede","precede","concrete","athlete"
     ]).slice(0,40), "e_e");
 
-    // i_e — 40+
+    // i_e — 45
     const WORDS_IE_SPLIT = make(uniq([
       "like","bike","hike","kite","time","five","nine","line","mine","pine",
       "ride","side","wide","hide","slide","smile","drive","stripe","prize","white",
       "life","wife","pipe","ripe","site","bite","dive","mile","file","tile",
       "while","shine","spine","price","slice","write","chime","spike","prime","glide",
-      "bride","crime","trite","shine","chime","spike","prime","glide","bride","crime"
+      "bride","crime","trite","chive","slime"
     ]).slice(0,45), "i_e");
 
-    // o_e — 40+
+    // o_e — 42
     const WORDS_OE_SPLIT = make(uniq([
       "home","rope","hope","bone","cone","tone","nose","rose","stone","stove",
       "globe","probe","close","those","broke","chose","smoke","spoke","woke","drove",
       "note","vote","code","mode","tote","slope","scope","robe","hole","pole",
       "role","sole","joke","poke","phone","zone","dome","alone","store","before",
-      "shore","more","whole","stole","bore"
-    ]).filter(w=>w!=="whole").slice(0,42), "o_e"); // remove "whole" (often taught as tricky)
+      "shore","more","stole","bore"
+    ]).slice(0,42), "o_e");
 
     // u_e — 45
     const WORDS_UE_SPLIT = make(uniq([
       "cube","cute","tune","mule","use","fuse","tube","flute","prune","June",
       "rule","rude","dune","duke","brute","mute","refuse","excuse","amuse","acute",
       "include","reduce","produce","bugle","dupe","lute","rune","pure","cure","secure",
-      "ensure","future","nature","mixture","adventure","picture","capture","texture","feature","failure",
-      "measure","treasure","closure","figure","gesture"
+      "ensure","future","nature","mixture","adventure","picture","capture","texture","feature","gesture",
+      "figure","measure","treasure","closure","allure"
     ]).slice(0,45), "u_e");
 
     // ee — 45
@@ -583,7 +616,7 @@
       "freeze","breeze","agree","three","fifteen"
     ]).slice(0,45), "ee");
 
-    // ie — 40 (kept mostly /aɪ/ with -ie/-ies forms)
+    // ie — 40
     const WORDS_IE = make(uniq([
       "pie","pies","tie","ties","tied","tying","lie","lies","lied","lying",
       "die","dies","died","dying","vie","vies","vied","vying",
@@ -592,14 +625,14 @@
       "skies","skied","untie","unties","untied","untying"
     ]).slice(0,40), "ie");
 
-    // oe — 40 (avoid "shoe/shoes/does")
+    // oe — 40 (avoid tricky does/shoe)
     const WORDS_OE = make(uniq([
       "toe","toes","toed","toeing","foe","foes","roe","roes","woe","woes",
       "hoe","hoes","sloe","sloes","floe","floes","throe","throes",
       "canoe","canoes","canoed","canoeing","oboe","oboes","oboeist","oboeists",
       "toenail","toenails","toehold","toeholds","toeline","toelines",
-      "foehold","foeholds","roe deer","roebuck","roebucks","toed"
-    ].map(x=>String(x).replace(" ",""))).slice(0,40), "oe");
+      "foehold","foeholds","toed","toes","toe","foe","roe","woe"
+    ]).slice(0,40), "oe");
 
     // ue — 40
     const WORDS_UE = make(uniq([
@@ -618,7 +651,7 @@
       "equal","equals","equate","equator","sequence"
     ]).slice(0,45), "qu");
 
-    // aw — 40
+    // aw / al / au / ou / wr / ph / kn (kept)
     const WORDS_AW = make(uniq([
       "saw","saws","sawed","sawing","raw","jaw","law","paw","claw","draw",
       "straw","crawl","dawn","yawn","lawn","hawk","squawk","flaw","thaw","shawl",
@@ -626,7 +659,6 @@
       "claws","draws","drawing","thaws","lawns","hawks","flaws","paws","strawberry","withdraw"
     ]).slice(0,40), "aw");
 
-    // al — 40
     const WORDS_AL = make(uniq([
       "all","ball","call","fall","hall","mall","tall","wall","stall","small",
       "walk","walks","walked","walking","talk","talks","talked","talking","chalk","chalks",
@@ -634,7 +666,6 @@
       "calm","calms","calmed","calming","palm","palms","palmed","palming","half","halves"
     ]).slice(0,40), "al");
 
-    // au — 40
     const WORDS_AU = make(uniq([
       "haul","hauls","hauled","hauling","fault","faults","faulted","gaunt","haunt","haunts",
       "haunted","haunting","cause","causes","caused","causing","pause","pauses","paused","pausing",
@@ -642,130 +673,150 @@
       "audits","audited","audio","audience","August","auction","auctions","vault","vaults","vaulted"
     ]).slice(0,40), "au");
 
-    // ou — 45 (mainly /aʊ/)
     const WORDS_OU = make(uniq([
       "out","outs","shout","shouts","shouted","shouting","loud","louder","loudest","cloud",
       "clouds","cloudy","round","rounds","rounded","rounding","sound","sounds","sounded","sounding",
       "found","count","counts","counted","counting","mount","mounts","mounted","mounting","house",
-      "houses","mouse","mice","south","mouth","pound","pounds","pounded","pounding","ground",
-      "grounds","grounded","clown","crown","crowns","town"
+      "houses","mouse","south","mouth","pound","pounds","pounded","pounding","ground",
+      "grounds","grounded","clown","crown","crowns","town","towns","browns","frowns"
     ]).slice(0,45), "ou");
 
-    // wr — 40 (avoid "wrote")
     const WORDS_WR = make(uniq([
       "wrap","wraps","wrapped","wrapping","wreck","wrecks","wrecked","wrecking","wrist","wrists",
       "write","writes","writing","writer","writers","wrong","wring","wrings","wrung","wringing",
       "wrench","wrenches","wrenched","wrenching","wrinkle","wrinkles","wrinkled","wrinkling","wreath","wreaths",
-      "wrestle","wrestles","wrestled","wrestling","wrath","wry","wrens","wraparound","wren","wretched"
+      "wrestle","wrestles","wrestled","wrestling","wrath","wry","wren","wrack","wretched","wraparound"
     ]).slice(0,40), "wr");
 
-    // ph — 45 (kept common)
     const WORDS_PH = make(uniq([
       "phone","phones","phoned","phoning","photo","photos","photograph","photographs","graph","graphs",
       "phrase","phrases","phonics","alphabet","elephant","dolphin","trophy","trophies","sphinx","pharmacy",
-      "physical","physics","philosophy","pheasant","phase","phases","photon","phoneme","phobia","phonetic",
-      "sapphire","nephew","triumph","triumphs","triumphant","pamphlet","symphony","sympathy","telephone","telephones",
-      "microphone","headphones","phonics","photobook","photoframe"
+      "physical","physics","philosophy","phase","phases","phoneme","phonetic","sapphire","nephew","triumph",
+      "pamphlet","symphony","sympathy","telephone","microphone","headphones","photobook","photoframe","graphing","graphic",
+      "photon","phony","phobia","phonology","phoned"
     ]).slice(0,45), "ph");
 
-    // kn — 40 (avoid "know/known")
     const WORDS_KN = make(uniq([
       "knit","knits","knitted","knitting","knot","knots","knotted","knotting","knee","knees",
       "kneel","kneels","kneeled","kneeling","knife","knives","knock","knocks","knocked","knocking",
       "knob","knobs","knuckle","knuckles","knuckled","knuckling","knave","knaves","knell","knells",
-      "knelt","knight","knights","kneecap","kneecaps","knapsack","knapsacks","knotwork","knitwear","knittingly"
+      "knelt","knight","knights","kneecap","kneecaps","knapsack","knapsacks","knotwork","knitwear","knocking"
     ]).slice(0,40), "kn");
 
-    // ============================
-    // NEW PATTERNS: th, ng, sh, ch, rh, wh (each >= 40)
-    // ============================
-
-    // th — 45 (mixed voiced/unvoiced, but decodable)
+    // th / ng / sh / ch / wh (kept)
     const WORDS_TH = make(uniq([
       "thin","thick","thank","think","thumb","thump","thud","thrush","thrift","thrive",
-      "three","threw","throw","throws","throwing","thread","threads","threat","threats","throat",
+      "three","throw","throws","throwing","thread","threads","threat","threats","throat","throats",
       "bath","baths","path","paths","math","moth","moths","both","with","cloth",
-      "clothes","cloths","teeth","tooth","tooths","toothbrush","north","south","fourth","tenth",
-      "thirty","thirst","thirsty","thunder","thunders"
+      "teeth","tooth","toothbrush","north","south","fourth","tenth","thirty","thirst","thirsty",
+      "thunder","thunders","theft","thorn","thorns"
     ]).slice(0,45), "th");
 
-    // ng — 45 (focus on clear -ng /ŋ/)
     const WORDS_NG = make(uniq([
       "ring","rings","ringing","king","kings","wing","wings","sing","sings","singing",
       "thing","things","long","longer","longest","song","songs","bang","bangs","banging",
       "hang","hangs","hanging","lung","lungs","hung","young","youngest","strong","stronger",
-      "string","strings","stringing","bring","brings","bringing","wrong","wrongs","wronging","sling",
-      "slings","slinging","along","among","songbird"
+      "string","strings","stringing","bring","brings","bringing","sling","slings","slinging","clang",
+      "clangs","clanging","sprang","spring","springs"
     ]).slice(0,45), "ng");
 
-    // sh — 45
     const WORDS_SH = make(uniq([
       "ship","ships","shop","shops","shut","shuts","shell","shelf","shark","sharks",
       "shake","shakes","shaking","shine","shines","shining","short","shirt","sharp","shape",
-      "sheep","sheet","sheets","shellfish","fish","dish","dishes","wish","wishes","wished",
-      "washing","wash","washes","washed","brush","brushes","brushed","crash","crashes","crashed",
-      "flash","flashes","flashlight","trash","splash"
+      "sheep","sheet","sheets","fish","dish","wish","wishes","wished","wash","washes",
+      "washed","washing","brush","brushes","brushed","crash","crashes","crashed","flash","flashes",
+      "trash","splash","shower","shallow","shadow"
     ]).slice(0,45), "sh");
 
-    // ch — 45
     const WORDS_CH = make(uniq([
       "chin","chat","chats","chip","chips","chop","chops","chopped","chopping","chess",
       "check","checks","checked","checking","chicken","chickens","chair","chairs","cheer","cheers",
       "cheered","cheering","cherry","cherries","cheese","chalk","chase","chases","chased","chasing",
       "bench","benches","lunch","lunches","bunch","bunches","rich","much","such","pitch",
-      "pitcher","match","matches","matched","matching"
+      "match","matches","matched","matching","champ","chomp"
     ]).slice(0,45), "ch");
 
-    // wh — 45 (avoid "who/whole" as tricky)
     const WORDS_WH = make(uniq([
       "what","when","where","which","while","white","whale","whales","wheel","wheels",
       "whip","whips","whipped","whipping","whisk","whisks","whisked","whisking","whisper","whispers",
       "whispered","whispering","whistle","whistles","whistled","whistling","whack","whacks","whacked","whacking",
       "wheat","whenever","wherever","whatever","whichever","whim","whims","whimsy","whiny","whine",
       "whines","whined","whining","wharf","wharfs"
-    ]).filter(w => w!=="who" && w!=="whole").slice(0,45), "wh");
-	
+    ]).slice(0,45), "wh");
+
+    // NEW: ar / or / ir-er-ur (in one button)
+    const WORDS_AR = make(uniq([
+      "car","cars","card","cards","cart","carts","park","parks","part","parts",
+      "dark","darks","hard","harm","harp","bark","barn","farm","mark","march",
+      "start","star","stars","smart","shark","sharp","charm","chart","spark","scarf",
+      "mart","artist","garden","market","bar","bars","jar","far","tar","scar",
+      "lark","larks","stark","barked","parking"
+    ]).slice(0,45), "ar");
+
+    const WORDS_OR = make(uniq([
+      "for","fork","horn","corn","sort","sport","storm","short","born","torn",
+      "port","ports","porch","torch","form","forms","fort","forts","north","more",
+      "shore","store","snore","chore","score","floor","door","doors","roar","boar",
+      "soar","sore","core","cord","cords","lord","lords","orbit","order","orders",
+      "morning","stormy","sporty","torchlight","shoreline"
+    ]).slice(0,45), "or");
+
+    const WORDS_R3 = make(uniq([
+      // ir
+      "bird","birds","girl","girls","first","third","shirt","skirt","dirt","firm",
+      "stir","stirs","stirred","stirring","whirl","whirls","whirled","chirp","chirps","chirped",
+      // er
+      "her","term","fern","perch","perched","verb","verbs","serve","served","serving",
+      "stern","kernel","person","perfect","teacher",
+      // ur
+      "fur","turn","turns","turned","turning","burn","burns","burned","burning","curl",
+      "curls","curled","hurt","hurts","hurting","surf","surfs","surfer","nurse","purple"
+    ]).slice(0,55), "ir/er/ur");
+
     // ============================
-    // GROUPS + TOGGLES (select any combination)
+    // GROUPS (kept earlier + new ones)
+    // Rule: selecting one pattern turns OFF others, except CVC stays ON.
+    // PSEUDO appears ONLY when ONE non-CVC group is selected.
     // ============================
     const GROUPS = [
-      { key:"cvc", label:"CVC", words: WORDS_CVC },
+      { key:"cvc", label:"CVC (always)", words: WORDS_CVC, locked:true },
 
-      { key:"a_e", label:"a_e", words: WORDS_AE },
-      { key:"e_e", label:"e_e", words: WORDS_EE_SPLIT },
-      { key:"i_e", label:"i_e", words: WORDS_IE_SPLIT },
-      { key:"o_e", label:"o_e", words: WORDS_OE_SPLIT },
-      { key:"u_e", label:"u_e", words: WORDS_UE_SPLIT },
+      { key:"a_e", label:"a_e", words: WORDS_AE, pseudoKey:"a_e" },
+      { key:"e_e", label:"e_e", words: WORDS_EE_SPLIT, pseudoKey:"e_e" },
+      { key:"i_e", label:"i_e", words: WORDS_IE_SPLIT, pseudoKey:"i_e" },
+      { key:"o_e", label:"o_e", words: WORDS_OE_SPLIT, pseudoKey:"o_e" },
+      { key:"u_e", label:"u_e", words: WORDS_UE_SPLIT, pseudoKey:"u_e" },
 
-      { key:"ee",  label:"ee",  words: WORDS_EE },
-      { key:"ie",  label:"ie",  words: WORDS_IE },
-      { key:"oe",  label:"oe",  words: WORDS_OE },
-      { key:"ue",  label:"ue",  words: WORDS_UE },
+      { key:"ee",  label:"ee",  words: WORDS_EE, pseudoKey:"ee" },
+      { key:"ie",  label:"ie",  words: WORDS_IE, pseudoKey:"ie" },
+      { key:"oe",  label:"oe",  words: WORDS_OE, pseudoKey:"oe" },
+      { key:"ue",  label:"ue",  words: WORDS_UE, pseudoKey:"ue" },
 
-      { key:"qu",  label:"qu",  words: WORDS_QU },
+      { key:"qu",  label:"qu",  words: WORDS_QU, pseudoKey:"qu" },
 
-      { key:"aw",  label:"aw",  words: WORDS_AW },
-      { key:"al",  label:"al",  words: WORDS_AL },
-      { key:"au",  label:"au",  words: WORDS_AU },
-      { key:"ou",  label:"ou",  words: WORDS_OU },
-      { key:"wr",  label:"wr",  words: WORDS_WR },
-      { key:"ph",  label:"ph",  words: WORDS_PH },
-      { key:"kn",  label:"kn",  words: WORDS_KN },
+      { key:"aw",  label:"aw",  words: WORDS_AW, pseudoKey:"aw" },
+      { key:"al",  label:"al",  words: WORDS_AL, pseudoKey:"al" },
+      { key:"au",  label:"au",  words: WORDS_AU, pseudoKey:"au" },
+      { key:"ou",  label:"ou",  words: WORDS_OU, pseudoKey:"ou" },
 
-      // NEW:
-      { key:"th",  label:"th",  words: WORDS_TH },
-      { key:"ng",  label:"ng",  words: WORDS_NG },
-      { key:"sh",  label:"sh",  words: WORDS_SH },
-      { key:"ch",  label:"ch",  words: WORDS_CH },
-      { key:"wh",  label:"wh",  words: WORDS_WH },
+      { key:"wr",  label:"wr",  words: WORDS_WR, pseudoKey:"wr" },
+      { key:"ph",  label:"ph",  words: WORDS_PH, pseudoKey:"ph" },
+      { key:"kn",  label:"kn",  words: WORDS_KN, pseudoKey:"kn" },
+
+      { key:"th",  label:"th",  words: WORDS_TH, pseudoKey:"th" },
+      { key:"ng",  label:"ng",  words: WORDS_NG, pseudoKey:"ng" },
+      { key:"sh",  label:"sh",  words: WORDS_SH, pseudoKey:"sh" },
+      { key:"ch",  label:"ch",  words: WORDS_CH, pseudoKey:"ch" },
+      { key:"wh",  label:"wh",  words: WORDS_WH, pseudoKey:"wh" },
+
+      // NEW
+      { key:"ar",  label:"ar",  words: WORDS_AR, pseudoKey:"ar" },
+      { key:"or",  label:"or",  words: WORDS_OR, pseudoKey:"or" },
+      { key:"r3",  label:"ir/er/ur", words: WORDS_R3, pseudoKey:"r3" },
     ];
 
-    // Safety check: each group must be >= 40
-    GROUPS.forEach(g=>{
-      if (g.words.length < 40) console.warn(`Group ${g.key} has ${g.words.length} words (need >= 40)`);
-    });
-
-    const selectedGroups = new Set(GROUPS.map(g=>g.key)); // default: all ON
+    // Default: only CVC ON
+    const selectedGroups = new Set(["cvc"]);
 
     // ============================
     // STATE
@@ -797,12 +848,12 @@
     let current = null;      // {w,p}
     let lastWord = "";
 
-    let score = 0;           // = number of RIGHT answers
+    let score = 0;
     let rightCount = 0;
     let wrongCount = 0;
 
     // ============================
-    // TOGGLES UI
+    // TOGGLES UI (single-select + CVC always ON)
     // ============================
     function renderToggles(){
       els.toggles.innerHTML = "";
@@ -816,30 +867,53 @@
         return b;
       };
 
-      els.toggles.appendChild(mkBtn("ALL", "util", () => {
-        GROUPS.forEach(g=>selectedGroups.add(g.key));
-        renderToggles();
-      }));
-      els.toggles.appendChild(mkBtn("NONE", "util", () => {
-        selectedGroups.clear();
-        renderToggles();
-      }));
-
       GROUPS.forEach(g=>{
         const on = selectedGroups.has(g.key);
+
+        if (g.locked){
+          const btn = mkBtn(g.label, `on locked`, () => {});
+          btn.setAttribute("aria-disabled","true");
+          els.toggles.appendChild(btn);
+          return;
+        }
+
         els.toggles.appendChild(mkBtn(g.label, on ? "on" : "", () => {
-          if (selectedGroups.has(g.key)) selectedGroups.delete(g.key);
-          else selectedGroups.add(g.key);
+          if (selectedGroups.has(g.key)){
+            // turn off -> back to only CVC
+            selectedGroups.clear();
+            selectedGroups.add("cvc");
+          } else {
+            // select this -> keep CVC, disable others
+            selectedGroups.clear();
+            selectedGroups.add("cvc");
+            selectedGroups.add(g.key);
+          }
           renderToggles();
         }));
       });
     }
 
+    // Pool builder:
+    // - Always includes CVC
+    // - Includes one selected group (if any)
+    // - Adds pseudo words ONLY if exactly ONE non-CVC group is selected
     function getActivePool(){
       const pool = [];
+      const picked = [...selectedGroups].filter(k => k !== "cvc");
+      const soloKey = (picked.length === 1) ? picked[0] : null;
+
       GROUPS.forEach(g=>{
-        if (selectedGroups.has(g.key)) pool.push(...g.words);
+        if (!selectedGroups.has(g.key)) return;
+
+        // real words
+        pool.push(...g.words);
+
+        // pseudo only when solo selection and has pseudoKey
+        if (soloKey && g.key === soloKey && g.pseudoKey && Array.isArray(PSEUDO[g.pseudoKey]) && PSEUDO[g.pseudoKey].length){
+          pool.push(...make(PSEUDO[g.pseudoKey], `${g.label} (pseudo)`));
+        }
       });
+
       return pool;
     }
 
@@ -935,15 +1009,6 @@
     // GAME CONTROL
     // ============================
     function startGame(){
-      const pool = getActivePool();
-      if (!pool.length){
-        els.word.textContent = "Select patterns";
-        els.patternHint.textContent = "Pattern: —";
-        els.wordBox.classList.add('idle');
-        setButtonsEnabled(false);
-        return;
-      }
-
       els.wordBox.classList.remove('idle');
 
       totalSeconds = Number(els.duration.value);

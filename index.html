@@ -69,6 +69,7 @@
       display:grid;
       place-items:center;
       overflow:hidden;
+      flex:0 0 auto;
     }
 
     .crest-slot img{
@@ -108,8 +109,10 @@
     }
 
     @media (max-width: 860px){
+      body{ padding:12px; }
       .grid{grid-template-columns:1fr;}
       .stats{justify-content:flex-start;}
+      .crest-slot{ width:48px; height:48px; }
     }
 
     .card{
@@ -118,6 +121,7 @@
       background: #000;
       box-shadow: var(--shadow);
       overflow:hidden;
+      min-width:0;
     }
 
     .card-head{
@@ -190,7 +194,7 @@
     }
 
     .word{
-      font-size: clamp(44px, 6.2vw, 78px);
+      font-size: clamp(40px, 6.2vw, 78px);
       font-weight: 900;
       letter-spacing: .5px;
       margin:0;
@@ -198,6 +202,7 @@
       text-align:center;
       line-height:1.05;
       text-shadow: 0 10px 26px rgba(0,0,0,.35);
+      word-break: break-word;
     }
 
     .sub{
@@ -231,6 +236,7 @@
       font-size: 20px;
       min-height:58px;
       color:#fff;
+      touch-action: manipulation;
     }
 
     .btn::before{
@@ -260,6 +266,7 @@
       transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
       position: relative;
       overflow: hidden;
+      touch-action: manipulation;
     }
     .btn-secondary::before{
       content:"";
@@ -403,6 +410,8 @@
       cursor:pointer;
       transition: transform .12s ease, filter .12s ease, box-shadow .12s ease;
       user-select:none;
+      touch-action: manipulation;
+      white-space:nowrap;
     }
     .toggle:active{ transform: translateY(1px); filter: brightness(.98); }
     .toggle.on{
@@ -413,61 +422,13 @@
       border-color: rgba(255,255,255,.22);
       opacity:.92;
     }
-	/* =========================
-   RESPONSIVE AUTO SCALE
-   ========================= */
-
-/* базовая ширина макета, под которую всё "идеально" */
-:root{
-  --base-w: 980;     /* совпадает с .app max width */
-  --ui-scale: 1;
-}
-
-body{
-  overflow-x: hidden;
-}
-
-/* оболочка, чтобы масштабирование не ломало центрирование */
-.app-wrap{
-  width: 100%;
-  display: flex;
-  justify-content: center;
-}
-
-/* ВАЖНО: scale применяется ко всему приложению */
-.app{
-  transform: scale(var(--ui-scale));
-  transform-origin: top center;
-
-  /* компенсируем scale по ширине, чтобы не появлялся горизонтальный скролл */
-  width: calc(min(980px, 100%) / var(--ui-scale));
-  max-width: calc(980px / var(--ui-scale));
-}
-
-/* чуть более “мобильные” и безопасные размеры */
-.word{
-  font-size: clamp(34px, 6vw, 78px);
-}
-
-.btn{
-  font-size: clamp(16px, 2.2vw, 20px);
-  min-height: clamp(48px, 6vh, 58px);
-}
-
-.crest-slot{
-  width: clamp(44px, 6vw, 56px);
-  height: clamp(44px, 6vw, 56px);
-}
-
   </style>
 </head>
 <body>
 
   <div class="snow" aria-hidden="true"></div>
 
- <div class="app-wrap">
   <div class="app">
-
 
     <div class="top">
       <div class="crests" aria-label="Hogwarts crests">
@@ -488,11 +449,11 @@ body{
     <div class="grid">
       <div class="card">
         <div class="card-head">
-          <div class="title">Reading: Right or Wrong</div>
+          <div class="title" id="title">Reading: Right or Wrong</div>
 
           <div class="controls">
             <div>
-              <label>Patterns</label><br>
+              <label id="patternsLabel">Patterns</label><br>
               <div class="toggles" id="patternToggles"></div>
             </div>
 
@@ -569,6 +530,13 @@ body{
     }
 
     // ============================
+    // MODES
+    // ============================
+    // patterns = your existing pattern-groups mode
+    // letters  = special CVC button switches to "letters/sounds" mode (order from the PDF)
+    let mode = "patterns";
+
+    // ============================
     // PSEUDO (auto: only when EXACTLY ONE non-CVC group selected)
     // ============================
     const PSEUDO = {
@@ -582,14 +550,6 @@ body{
       ie:["pien","tiel","lien","mien","kien","zien","vied","fies","plien","brien","slied","grien","tien","mien","kied","zied","pried","tried","dried","flied"],
       oe:["foe","roe","boe","toed","foes","roes","toes","hoed","toen","foen","roen","boen","toef","roef","foef","boef","joes","koes","loes","noes"],
       ue:["plue","grue","flue","clued","glued","blued","trued","huing","ruing","suing","cuing","truing","gluing","cluing","bluish","trueish","hued","rued","sued","cued"],
-
-      // NEW pseudo groups (optional but included)
-      ai:["bain","dain","fain","lain","main","nain","pain","rain","tain","vain"],
-      ay:["bray","clay","dray","fray","gray","play","stay","tray","slay","pray"],
-      igh:["bight","dight","light","night","right","tight","fight","might","sight","bright"],
-      oa:["boad","coad","goad","load","toad","woad","roam","coal","goal","boat"],
-      ea:["meat","seat","heat","bead","deal","seal","team","dream","clean","teach"],
-      ew:["mew","pew","chew","stew","blew","flew","grew","threw","crew","drew"],
 
       qu:["quab","quep","quim","quop","quut","quemp","quost","squeg","squop","squut","quaff","quolt","quark","quern","quill","quilt","quisk","quash","quend","quand"],
 
@@ -610,12 +570,24 @@ body{
 
       ar:["zarf","marb","tarb","larp","garp","narb","harf","jarb","carf","parn","tarm","darp","farn","barm","garn","zarn","sark","wark","lark","spark"],
       or:["zorn","lork","torm","morb","sorf","gorn","tork","vorn","dorb","bort","corm","dorn","forb","hork","jort","korn","lorn","morn","porm","sorn"],
-      r3:["birn","gerp","nurv","firb","terg","hurm","sirn","derp","kurm","verp","jirb","lerg","murv","pirn","serp","turm","wirn","zerp","yurm","xirn"]
+      r3:["birn","gerp","nurv","firb","terg","hurm","sirn","derp","kurm","verp","jirb","lerg","murv","pirn","serp","turm","wirn","zerp","yurm","xirn"],
+
+      // NEW: oo
+      oo:["boop","goom","nood","voot","zoon","choop","snoop","troon","ploof","groop","moof","loob","foom","doot","koom","woot","stoon","bloof","droop","sloom"],
+
+      // NEW: ai, ay, igh, oa, ea(=ee), ew
+      ai:["paim","naid","laip","taim","raig","saif","mait","gaip","daim","haif","vaim","zaip","kaim","faid","wail","bain","cail","dain","hail","jain"],
+      ay:["plaiy","braym","frayn","slayp","clayn","traym","spayn","drayp","crayn","flayn","grayn","stayn","prayn","blayp","shayn","whayp","frayt","crayt","slayt","grayt"],
+      igh:["nighp","lighm","tighn","sighd","righf","pighk","mighl","fight","hight","bight","dight","night","light","right","sight","wight","tight","might","fight","slight"],
+      oa:["moat","goat","boat","toad","road","load","soap","foam","coat","loan","moan","roam","hoax","loaf","oaks","soak","cloak","groan","float","bloat"],
+      ea:["bead","meat","team","seat","heap","leap","peach","reach","teach","cheap","clean","dream","cream","steam","beach","leaf","mean","meal","peak","neat"],
+      ew:["new","few","chew","stew","blew","grew","threw","screw","flew","drew","brew","skew","renew","review","chewed","stewed","newest","fewest","chewer","stewpan"]
     };
 
     // ============================
     // PATTERN DETECTION (for exclusivity filter)
     // ============================
+    // IMPORTANT: we add ai/ay/igh/oa/ea/ew/oo so they get excluded from other groups unless selected
     const PATTERN_RULES = {
       a_e: /a.e/,
       e_e: /e.e/,
@@ -627,14 +599,6 @@ body{
       ie: /ie/,
       oe: /oe/,
       ue: /ue/,
-
-      // NEW: vowel teams
-      ai: /ai/,
-      ay: /ay\b/,
-      igh: /igh/,
-      oa: /oa/,
-      ea: /ea/,
-      ew: /ew/,
 
       qu: /qu/,
       aw: /aw/,
@@ -654,7 +618,16 @@ body{
 
       ar: /ar/,
       or: /or/,
-      r3: /(ir|er|ur)/
+      r3: /(ir|er|ur)/,
+
+      // NEW
+      ai: /ai/,
+      ay: /ay/,
+      igh: /igh/,
+      oa: /oa/,
+      ea: /ea/,
+      ew: /ew/,
+      oo: /oo/
     };
 
     function detectPatterns(word){
@@ -690,7 +663,7 @@ body{
     }
 
     // ============================
-    // REAL WORD LISTS
+    // REAL WORD LISTS (your existing lists)
     // ============================
     const WORDS_CVC = make([
       "cat","bat","hat","mat","rat","cap","tap","map","nap","lap",
@@ -768,39 +741,6 @@ body{
       "sued","suing","hue","hues","rue","rues","rued","ruing","cue","cues",
       "cued","cuing","rescue","rescues","rescued","rescuing","statue","statues","issue","issues"
     ]).slice(0,40), "ue");
-
-    // NEW: ai, ay, igh, oa, ea (as ee), ew
-    const WORDS_AI = make(uniq([
-      "rain","pain","main","gain","mail","sail","tail","nail","fail","pail",
-      "train","brain","chain","plain","stain","trail","claim","paid","maid","laid",
-      "wait","bait"
-    ]).slice(0,45), "ai");
-
-    const WORDS_AY = make(uniq([
-      "day","may","say","way","play","stay","tray","clay","gray","pray",
-      "delay","display","repay","holiday"
-    ]).slice(0,45), "ay");
-
-    const WORDS_IGH = make(uniq([
-      "high","sigh","light","night","right","tight","fight","might","sight","bright",
-      "flight","slight"
-    ]).slice(0,45), "igh");
-
-    const WORDS_OA = make(uniq([
-      "boat","coat","goat","road","toad","load","soap","loaf","goal","coal",
-      "float","throat","coach","roast"
-    ]).slice(0,45), "oa");
-
-    // ea (sounds like ee) — keep only ee-sound examples
-    const WORDS_EA_EE = make(uniq([
-      "eat","seat","meat","heat","bead","deal","seal","team","dream","clean",
-      "please","each","peach","reach","teach","mean","bean"
-    ]).slice(0,45), "ea (ee)");
-
-    // ew — exclude exception like "sew" (/oʊ/)
-    const WORDS_EW = make(uniq([
-      "new","few","chew","stew","blew","flew","grew","threw","crew","drew"
-    ]).slice(0,45), "ew");
 
     const WORDS_QU = make(uniq([
       "quiz","quit","quill","quick","quilt","quack","quench","queen","queens","quest",
@@ -927,9 +867,67 @@ body{
     ]).slice(0,55), "ir/er/ur");
 
     // ============================
-    // GROUPS
+    // NEW: oo / ai / ay / igh / oa / ea / ew (REAL WORD LISTS)
+    // ============================
+    const WORDS_OO = make(uniq([
+      // /ʊ/ (book sound)
+      "book","books","cook","cooks","cooked","cooking","look","looks","looked","looking",
+      "good","wood","foot","hook","hooks","shook","took","brook","crook","stood",
+      "wool","coolish",
+      // /u:/ (moon sound)
+      "moon","moons","soon","noon","food","pool","school","scoot","spoon","spoons",
+      "room","rooms","boot","boots","goose","gooses","tooth","teeth","root","shoot",
+      "roof","proof","smooth","zoom","zoo","bloom","gloom","stoop","snoop","troop",
+      "droop","loop","loops","hoop","hoops","toot","coo","woo","kooky","cartoon"
+    ]).slice(0,45), "oo");
+
+    const WORDS_AI = make(uniq([
+      "rain","train","plain","snail","mail","tail","main","wait","paint","saint",
+      "brain","chain","chair","hair","fair","pair","stair","claim","bait","paid",
+      "laid","aim","sail","fail","hail","nail","rail","trail","grain","brainy",
+      "faint","taint","vain","sprain","strain","retain","detail","remain","explain","complain"
+    ]).slice(0,45), "ai");
+
+    const WORDS_AY = make(uniq([
+      "play","stay","say","day","may","pay","tray","gray","spray","delay",
+      "display","birthday","always","Sunday","holiday","today","yesterday","away","okay","relay",
+      "highway","subway","gateway","runway","weekday","daylight","mayday","payday","playground","staying",
+      "playing","saying","lay","laying","bay","hay","clay","ray","stray","okayish"
+    ]).slice(0,45), "ay");
+
+    const WORDS_IGH = make(uniq([
+      "high","sigh","night","light","right","fight","tight","might","bright","flight",
+      "sight","fright","slight","delight","midnight","moonlight","highlight","nightly","brighten","fighter",
+      "lighter","rightful","highway","highland","insight","upright","twilight","sunlight","alright","highness"
+    ]).slice(0,45), "igh");
+
+    const WORDS_OA = make(uniq([
+      "boat","goat","coat","float","toad","road","load","soap","soak","oak",
+      "oats","moat","roam","foam","goal","coal","loan","moan","groan","cloak",
+      "throat","toast","coast","roast","boast","coach","roach","approach","roadside","goatlike",
+      "boatman","oatmeal","coastal","loadable","loaf","loaves","snow","blow","grow","show"
+    ]).slice(0,45), "oa");
+
+    // ea (sounds like ee) — your request
+    const WORDS_EA = make(uniq([
+      "eat","meat","seat","team","sea","seal","mean","clean","dream","cream",
+      "leaf","leak","peak","beak","teach","reach","beach","each","peach","cheap",
+      "neat","heat","treat","street","between","green","queen","cheese","speak","leave",
+      "please","read","reader","reading","heal","heap","leap","bead","lead","meal"
+    ]).slice(0,45), "ea");
+
+    const WORDS_EW = make(uniq([
+      "new","few","chew","stew","blew","grew","threw","screw","flew","drew",
+      "brew","skew","renew","review","chewed","stewed","newest","fewest","chewer","stewpan",
+      "jewel","jewels","newborn","newly","interview","preview","renewed","news","newspaper","rewind",
+      "mew","pew","dewy","chewy","stewpot","skewer","crew","crews","chewable","renewable"
+    ]).slice(0,45), "ew");
+
+    // ============================
+    // GROUPS (PATTERNS MODE)
     // ============================
     const GROUPS = [
+      // IMPORTANT: clicking CVC switches to LETTER MODE (not just selecting)
       { key:"cvc", label:"CVC", words: WORDS_CVC },
 
       { key:"a_e", label:"a_e", words: WORDS_AE, pseudoKey:"a_e" },
@@ -942,14 +940,6 @@ body{
       { key:"ie",  label:"ie",  words: WORDS_IE, pseudoKey:"ie" },
       { key:"oe",  label:"oe",  words: WORDS_OE, pseudoKey:"oe" },
       { key:"ue",  label:"ue",  words: WORDS_UE, pseudoKey:"ue" },
-
-      // NEW groups
-      { key:"ai",  label:"ai",      words: WORDS_AI,    pseudoKey:"ai" },
-      { key:"ay",  label:"ay",      words: WORDS_AY,    pseudoKey:"ay" },
-      { key:"igh", label:"igh",     words: WORDS_IGH,   pseudoKey:"igh" },
-      { key:"oa",  label:"oa",      words: WORDS_OA,    pseudoKey:"oa" },
-      { key:"ea",  label:"ea (ee)", words: WORDS_EA_EE, pseudoKey:"ea" },
-      { key:"ew",  label:"ew",      words: WORDS_EW,    pseudoKey:"ew" },
 
       { key:"qu",  label:"qu",  words: WORDS_QU, pseudoKey:"qu" },
 
@@ -971,15 +961,55 @@ body{
       { key:"ar",  label:"ar",  words: WORDS_AR, pseudoKey:"ar" },
       { key:"or",  label:"or",  words: WORDS_OR, pseudoKey:"or" },
       { key:"r3",  label:"ir/er/ur", words: WORDS_R3, pseudoKey:"r3" },
+
+      // NEW groups
+      { key:"ai",  label:"ai", words: WORDS_AI, pseudoKey:"ai" },
+      { key:"ay",  label:"ay", words: WORDS_AY, pseudoKey:"ay" },
+      { key:"igh", label:"igh", words: WORDS_IGH, pseudoKey:"igh" },
+      { key:"oa",  label:"oa", words: WORDS_OA, pseudoKey:"oa" },
+      { key:"ea",  label:"ea", words: WORDS_EA, pseudoKey:"ea" },
+      { key:"ew",  label:"ew", words: WORDS_EW, pseudoKey:"ew" },
+      { key:"oo",  label:"oo", words: WORDS_OO, pseudoKey:"oo" },
     ];
 
     // Default: NONE selected
     const selectedGroups = new Set();
 
     // ============================
+    // LETTER MODE (order from PDF pages 1–4)
+    // source: Genki Phonics Minicards PDF :contentReference[oaicite:0]{index=0}
+    // ============================
+    const LETTER_TILES = [
+      // page 1
+      {k:"s",  t:"C"}, {k:"i", t:"V"}, {k:"t", t:"C"}, {k:"p", t:"C"},
+      {k:"a",  t:"V"}, {k:"n", t:"C"}, {k:"m", t:"C"}, {k:"d", t:"C"},
+      {k:"g",  t:"C"}, {k:"o", t:"V"}, {k:"c", t:"C"}, {k:"k", t:"C"},
+      {k:"e",  t:"V"}, {k:"u", t:"V"}, {k:"r", t:"C"}, {k:"h", t:"C"},
+      // page 2
+      {k:"b",  t:"C"}, {k:"f", t:"C"}, {k:"l", t:"C"}, {k:"j", t:"C"},
+      {k:"v",  t:"C"}, {k:"w", t:"C"}, {k:"x", t:"C"}, {k:"y", t:"V"}, // y can be vowel-ish
+      {k:"z",  t:"C"}, {k:"qu",t:"C"}, {k:"ch",t:"C"}, {k:"sh",t:"C"},
+      {k:"th", t:"C"}, {k:"th2",t:"C", label:"th"}, {k:"ng",t:"C"}, {k:"ai",t:"V"},
+      // page 3
+      {k:"ee", t:"V"}, {k:"igh",t:"V"}, {k:"oa",t:"V"}, {k:"oo",t:"V"},
+      {k:"ar", t:"V"}, {k:"or",t:"V"}, {k:"ur",t:"V"}, {k:"ow",t:"V"},
+      {k:"oi", t:"V"}, {k:"ear",t:"V"}, {k:"air",t:"V"}, {k:"er",t:"V"},
+      {k:"ure",t:"V"}, {k:"ph",t:"C"}, {k:"wh",t:"C"}, {k:"wr",t:"C"},
+      // page 4 (includes some repeats / review tiles; kept in the same order)
+      {k:"le", t:"E"}, {k:"ea",t:"V"}, {k:"ay",t:"V"}, {k:"a_e",t:"V"},
+      {k:"ie", t:"V"}, {k:"i_e",t:"V"}, {k:"o_e",t:"V"}, {k:"ew",t:"V"},
+      {k:"u_e",t:"V"}, {k:"aw",t:"V"}, {k:"ou",t:"V"}
+    ];
+
+    // In letter mode we pick "chunks" from selectedLetters and build pseudo-words.
+    const selectedLetters = new Set();
+
+    // ============================
     // DOM
     // ============================
     const els = {
+      title: document.getElementById('title'),
+      patternsLabel: document.getElementById('patternsLabel'),
       duration: document.getElementById('duration'),
       startBtn: document.getElementById('startBtn'),
       resetBtn: document.getElementById('resetBtn'),
@@ -1020,63 +1050,21 @@ body{
     let lastDeckKey = "";
 
     function buildDeckKey(){
-      return [...selectedGroups].sort().join("|");
+      if (mode === "letters") return "letters|" + [...selectedLetters].sort().join("|");
+      return "patterns|" + [...selectedGroups].sort().join("|");
     }
 
     function rebuildDeck(force = false){
       const k = buildDeckKey();
       if (!force && k === lastDeckKey && deck.length) return;
 
-      const pool = getActivePool();
+      const pool = (mode === "letters") ? getLetterPool() : getActivePool();
       deck = shuffle(pool.slice());
       lastDeckKey = k;
     }
 
     // ============================
-    // TOGGLES UI (multi-select + ALL/NONE)
-    // ============================
-    function renderToggles(){
-      els.toggles.innerHTML = "";
-
-      const mkBtn = (text, cls, onClick) => {
-        const b = document.createElement('button');
-        b.type = "button";
-        b.className = `toggle ${cls || ""}`.trim();
-        b.textContent = text;
-        b.addEventListener('click', onClick);
-        return b;
-      };
-
-      const afterChange = () => {
-        rebuildDeck(true);
-      };
-
-      // ALL / NONE
-      els.toggles.appendChild(mkBtn("ALL", "util", () => {
-        GROUPS.forEach(g => selectedGroups.add(g.key));
-        renderToggles();
-        afterChange();
-      }));
-
-      els.toggles.appendChild(mkBtn("NONE", "util", () => {
-        selectedGroups.clear();
-        renderToggles();
-        afterChange();
-      }));
-
-      GROUPS.forEach(g=>{
-        const on = selectedGroups.has(g.key);
-        els.toggles.appendChild(mkBtn(g.label, on ? "on" : "", () => {
-          if (selectedGroups.has(g.key)) selectedGroups.delete(g.key);
-          else selectedGroups.add(g.key);
-          renderToggles();
-          afterChange();
-        }));
-      });
-    }
-
-    // ============================
-    // POOL (strictly selected patterns only + exclusivity filter)
+    // POOL (PATTERNS MODE)
     // ============================
     function getActivePool(){
       const pool = [];
@@ -1110,6 +1098,93 @@ body{
     }
 
     // ============================
+    // LETTER MODE POOL
+    // ============================
+    // Build pseudo-words from selected letter/sound chunks.
+    function getLetterPool(){
+      const picked = [...selectedLetters];
+      if (!picked.length) return [];
+
+      // map th2 -> th (display), but keep key in selection
+      const normalizeChunk = (c) => (c === "th2" ? "th" : c);
+
+      const consonants = picked
+        .filter(k => (LETTER_TILES.find(t => t.k === k)?.t === "C"))
+        .map(normalizeChunk);
+
+      const vowels = picked
+        .filter(k => {
+          const t = LETTER_TILES.find(x => x.k === k)?.t;
+          return t === "V";
+        })
+        .map(normalizeChunk);
+
+      const endings = picked
+        .filter(k => (LETTER_TILES.find(t => t.k === k)?.t === "E"))
+        .map(normalizeChunk);
+
+      // If user only selects one chunk: show that chunk (for practice)
+      if (picked.length === 1){
+        const one = normalizeChunk(picked[0]);
+        return [{ w: one, p: `Letters: ${one}` }];
+      }
+
+      // Generate a reasonable batch of pseudo-words (no meaning needed)
+      const out = [];
+      const want = 80;
+
+      // helper random
+      const r = (arr) => arr[Math.floor(Math.random()*arr.length)];
+
+      // cases:
+      // - if we have vowels + consonants -> build CVC-ish: C + V + C (or V + C, C + V, etc.)
+      // - if only vowels -> return random vowel combos (2 chunks)
+      // - if only consonants -> return random consonant combos (2–3 chunks)
+      const addUnique = (w) => {
+        if (!out.some(x => x.w === w)) out.push({ w, p: "Letters (pseudo)" });
+      };
+
+      if (vowels.length && consonants.length){
+        let guard = 0;
+        while (out.length < want && guard < 2000){
+          guard++;
+          const onset = r(consonants);
+          const nucleus = r(vowels);
+          const codaChoice = Math.random() < 0.7 ? r(consonants) : "";
+          const end = endings.length && Math.random() < 0.25 ? r(endings) : "";
+
+          // avoid weird "qu" without vowel: here nucleus exists so it's ok.
+          let word = (onset + nucleus + codaChoice + end).replace(/\s+/g,"");
+          // basic cleanup: don't allow triple same chunk repeated
+          if (/(.)\1\1/.test(word)) continue;
+          addUnique(word);
+        }
+      } else if (vowels.length && !consonants.length){
+        let guard = 0;
+        while (out.length < Math.min(want, 60) && guard < 1200){
+          guard++;
+          const a = r(vowels);
+          const b = r(vowels);
+          if (a === b) continue;
+          addUnique(a + b);
+        }
+      } else {
+        // consonants only
+        let guard = 0;
+        while (out.length < Math.min(want, 60) && guard < 1200){
+          guard++;
+          const a = r(consonants);
+          const b = r(consonants);
+          const c = Math.random() < 0.4 ? r(consonants) : "";
+          if (a === b) continue;
+          addUnique(a + b + c);
+        }
+      }
+
+      return out;
+    }
+
+    // ============================
     // GAME HELPERS
     // ============================
     function setButtonsEnabled(on){
@@ -1129,12 +1204,12 @@ body{
     function chooseNextWord(){
       if (!deck.length){
         rebuildDeck(true);
-        if (!deck.length) return { w: "Select patterns", p: "—" };
+        if (!deck.length) return { w: (mode === "letters" ? "Select letters" : "Select patterns"), p: "—" };
       }
 
       let pick = deck.pop();
 
-      // avoid immediate repeat across deck boundaries if possible
+      // prevent immediate back-to-back repeat on boundary
       if (pick && pick.w === lastWord && deck.length){
         const pick2 = deck.pop();
         deck.unshift(pick);
@@ -1206,13 +1281,136 @@ body{
     }
 
     // ============================
+    // UI: TOGGLES (PATTERNS vs LETTERS)
+    // ============================
+    function setMode(newMode){
+      mode = newMode;
+
+      // stop game immediately so UI is not confusing
+      running = false;
+      paused = false;
+      clearInterval(t);
+      t = null;
+
+      deck = [];
+      lastDeckKey = "";
+      current = null;
+      lastWord = "";
+
+      els.log.innerHTML = '';
+      els.word.textContent = 'Press Start';
+      els.wordBox.classList.add('idle');
+      els.patternHint.textContent = 'Pattern: —';
+      els.startBtn.textContent = 'Start';
+      setButtonsEnabled(false);
+      els.bar.style.width = '0%';
+      els.timeLeft.textContent = '—';
+      updateStats();
+
+      renderToggles();
+    }
+
+    function renderToggles(){
+      els.toggles.innerHTML = "";
+
+      const mkBtn = (text, cls, onClick) => {
+        const b = document.createElement('button');
+        b.type = "button";
+        b.className = `toggle ${cls || ""}`.trim();
+        b.textContent = text;
+        b.addEventListener('click', onClick);
+        return b;
+      };
+
+      if (mode === "patterns"){
+        els.title.textContent = "Reading: Right or Wrong";
+        els.patternsLabel.textContent = "Patterns";
+
+        const afterChange = () => {
+          rebuildDeck(true);
+        };
+
+        // ALL / NONE
+        els.toggles.appendChild(mkBtn("ALL", "util", () => {
+          selectedGroups.clear();
+          GROUPS.forEach(g => selectedGroups.add(g.key));
+          renderToggles();
+          afterChange();
+        }));
+
+        els.toggles.appendChild(mkBtn("NONE", "util", () => {
+          selectedGroups.clear();
+          renderToggles();
+          afterChange();
+        }));
+
+        GROUPS.forEach(g=>{
+          const on = selectedGroups.has(g.key);
+
+          // SPECIAL: CVC -> switch to LETTER MODE (as you asked)
+          if (g.key === "cvc"){
+            els.toggles.appendChild(mkBtn("CVC → Letters", "util", () => {
+              // keep patterns as-is; switch mode
+              selectedLetters.clear();
+              setMode("letters");
+            }));
+            return;
+          }
+
+          els.toggles.appendChild(mkBtn(g.label, on ? "on" : "", () => {
+            if (selectedGroups.has(g.key)) selectedGroups.delete(g.key);
+            else selectedGroups.add(g.key);
+            renderToggles();
+            afterChange();
+          }));
+        });
+
+        return;
+      }
+
+      // LETTER MODE
+      els.title.textContent = "CVC Letters Mode";
+      els.patternsLabel.textContent = "Letters / Sounds";
+
+      // top util row
+      els.toggles.appendChild(mkBtn("← Back", "util", () => {
+        setMode("patterns");
+      }));
+
+      els.toggles.appendChild(mkBtn("ALL", "util", () => {
+        selectedLetters.clear();
+        LETTER_TILES.forEach(t => selectedLetters.add(t.k));
+        renderToggles();
+        rebuildDeck(true);
+      }));
+
+      els.toggles.appendChild(mkBtn("NONE", "util", () => {
+        selectedLetters.clear();
+        renderToggles();
+        rebuildDeck(true);
+      }));
+
+      // tiles in the exact order from the PDF pages 1–4 :contentReference[oaicite:1]{index=1}
+      LETTER_TILES.forEach(t=>{
+        const label = t.label || t.k;
+        const on = selectedLetters.has(t.k);
+        els.toggles.appendChild(mkBtn(label, on ? "on" : "", () => {
+          if (selectedLetters.has(t.k)) selectedLetters.delete(t.k);
+          else selectedLetters.add(t.k);
+          renderToggles();
+          rebuildDeck(true);
+        }));
+      });
+    }
+
+    // ============================
     // GAME CONTROL
     // ============================
     function startGame(){
       rebuildDeck(true);
 
       if (!deck.length){
-        els.word.textContent = "Select patterns";
+        els.word.textContent = (mode === "letters") ? "Select letters" : "Select patterns";
         els.patternHint.textContent = "Pattern: —";
         els.wordBox.classList.add('idle');
         setButtonsEnabled(false);
@@ -1236,7 +1434,7 @@ body{
       lastWord = "";
       els.log.innerHTML = '';
 
-      // new start = new non-repeating cycle
+      // new round = new deck (no repeats until exhausted)
       rebuildDeck(true);
 
       setButtonsEnabled(true);
@@ -1342,37 +1540,9 @@ body{
       if (e.key.toLowerCase() === 'w') answer(false);
     });
 
-    // ============================
-// RESPONSIVE SCALE (auto)
-// ============================
-function applyScale(){
-  const root = document.documentElement;
-
-  // доступная ширина экрана (минус внутренние отступы body)
-  const availableW = window.innerWidth - 36; // body padding 18px * 2
-  const baseW = Number(getComputedStyle(root).getPropertyValue('--base-w')) || 980;
-
-  // масштаб: не увеличиваем сверх 1, только уменьшаем при необходимости
-  const s = Math.min(1, availableW / baseW);
-
-  // ограничим, чтобы совсем не “микроскоп”
-  const clamped = Math.max(0.72, s);
-
-  root.style.setProperty('--ui-scale', clamped.toFixed(3));
-}
-
-// применять сразу и при любом ресайзе/повороте/проекторе
-window.addEventListener('resize', applyScale);
-window.addEventListener('orientationchange', applyScale);
-
-	// INIT
-	// INIT
-renderToggles();
-resetAll();
-applyScale();
-   </script>
-  </div>
-</div>
+    // INIT
+    renderToggles();
+    resetAll();
+  </script>
 </body>
 </html>
-

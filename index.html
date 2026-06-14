@@ -10,7 +10,6 @@
       --text:#eef3ff;
       --muted:#a9b5d2;
       --line:rgba(255,255,255,.12);
-
       --shadow: 0 14px 40px rgba(0,0,0,.35);
       --shadow2: 0 8px 18px rgba(0,0,0,.35);
     }
@@ -30,6 +29,7 @@
       display:flex;
       justify-content:center;
       padding:18px;
+      overflow-x:hidden;
     }
 
     .app{
@@ -38,7 +38,7 @@
       flex-direction:column;
       gap:14px;
       position: relative;
-      z-index: 1; /* above snow */
+      z-index: 1;
     }
 
     .top{
@@ -53,391 +53,97 @@
       box-shadow: var(--shadow2);
     }
 
-    .crests{
-      display:flex;
-      gap:10px;
-      align-items:center;
-      flex-wrap:wrap;
-    }
+    .crests{display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
 
     .crest-slot{
-      width:56px;
-      height:56px;
-      border-radius:14px;
+      width:56px; height:56px; border-radius:14px;
       border:1px dashed rgba(255,255,255,.26);
       background: rgba(255,255,255,.04);
-      display:grid;
-      place-items:center;
-      overflow:hidden;
-      flex:0 0 auto;
+      display:grid; place-items:center; overflow:hidden;
     }
+    .crest-slot img{width:100%; height:100%; object-fit:contain; display:block; opacity:.95;}
 
-    .crest-slot img{
-      width:100%;
-      height:100%;
-      object-fit:contain;
-      display:block;
-      opacity:.95;
-    }
-
-    .stats{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      justify-content:flex-end;
-      align-items:center;
-    }
+    .stats{display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; align-items:center;}
 
     .pill{
-      padding:10px 12px;
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.04);
-      border-radius:999px;
-      font-weight:700;
-      letter-spacing:.2px;
-      display:flex;
-      gap:8px;
-      align-items:baseline;
-      white-space:nowrap;
+      padding:10px 12px; border:1px solid var(--line);
+      background: rgba(255,255,255,.04); border-radius:999px;
+      font-weight:700; letter-spacing:.2px; display:flex; gap:8px;
+      align-items:baseline; white-space:nowrap;
     }
     .pill span{color:var(--muted); font-weight:600; font-size:12px;}
 
-    .grid{
-      display:grid;
-      grid-template-columns: 1.05fr .95fr;
-      gap:14px;
-    }
+    .grid{display:grid; grid-template-columns: 1.05fr .95fr; gap:14px;}
+    @media (max-width: 860px){.grid{grid-template-columns:1fr;} .stats{justify-content:flex-start;}}
 
-    @media (max-width: 860px){
-      body{ padding:12px; }
-      .grid{grid-template-columns:1fr;}
-      .stats{justify-content:flex-start;}
-      .crest-slot{ width:48px; height:48px; }
-    }
+    .card{border:1px solid var(--line); border-radius:22px; background:#000; box-shadow:var(--shadow); overflow:hidden;}
+    .card-head{padding:14px 16px; border-bottom:1px solid var(--line); background:#000; display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;}
+    .title{font-size:15px; font-weight:800; letter-spacing:.3px;}
+    .controls{display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end;}
+    label{font-size:12px; color:var(--muted); font-weight:700; letter-spacing:.2px;}
+    select, button{font:inherit;}
+    select{background:#000; color:var(--text); border:1px solid var(--line); border-radius:14px; padding:10px 12px; outline:none; font-weight:700;}
+    select option{background:#000; color:var(--text);}
+    select:focus{box-shadow:0 0 0 3px rgba(90,168,255,.18);}
 
-    .card{
-      border:1px solid var(--line);
-      border-radius:22px;
-      background: #000;
-      box-shadow: var(--shadow);
-      overflow:hidden;
-      min-width:0;
-    }
-
-    .card-head{
-      padding:14px 16px;
-      border-bottom:1px solid var(--line);
-      background: #000;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-
-    .title{
-      font-size:15px;
-      font-weight:800;
-      letter-spacing:.3px;
-    }
-
-    .controls{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      align-items:flex-end;
-    }
-
-    label{
-      font-size:12px;
-      color:var(--muted);
-      font-weight:700;
-      letter-spacing:.2px;
-    }
-
-    select, button{ font:inherit; }
-
-    select{
-      background: #000;
-      color: var(--text);
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:10px 12px;
-      outline:none;
-      font-weight:700;
-    }
-    select option{
-      background:#000;
-      color: var(--text);
-    }
-    select:focus{box-shadow: 0 0 0 3px rgba(90,168,255,.18);}
-
-    .big-area{
-      padding:20px 16px 16px;
-      display:flex;
-      flex-direction:column;
-      gap:14px;
-      min-height:360px;
-    }
-
-    .word-box{
-      background: #070707;
-      border:1px solid rgba(255,255,255,.14);
-      border-radius:18px;
-      padding:18px 16px;
-      display:grid;
-      place-items:center;
-    }
-    .word-box.idle{
-      background: linear-gradient(180deg, rgba(24, 72, 170, .98), rgba(10, 35, 88, .98));
-      border-color: rgba(90,168,255,.45);
-    }
-
-    .word{
-      font-size: clamp(40px, 6.2vw, 78px);
-      font-weight: 900;
-      letter-spacing: .5px;
-      margin:0;
-      user-select:none;
-      text-align:center;
-      line-height:1.05;
-      text-shadow: 0 10px 26px rgba(0,0,0,.35);
-      word-break: break-word;
-    }
-
-    .sub{
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.25;
-    }
-
-    .btn-row{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:12px;
-    }
-
-    .btn{
-      border:1px solid rgba(255,255,255,.14);
-      border-radius:18px;
-      padding:14px 14px;
-      font-weight:900;
-      letter-spacing:.4px;
-      cursor:pointer;
-      user-select:none;
-      position:relative;
-      box-shadow: 0 14px 30px rgba(0,0,0,.35);
-      transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
-      overflow:hidden;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:10px;
-      font-size: 20px;
-      min-height:58px;
-      color:#fff;
-      touch-action: manipulation;
-    }
-
-    .btn::before{
-      content:"";
-      position:absolute;
-      inset: 0;
-      background: radial-gradient(400px 120px at 30% 0%, rgba(255,255,255,.22), transparent 60%);
-      opacity:.7;
-      pointer-events:none;
-    }
-
-    .btn:active{ transform: translateY(2px) scale(.99); box-shadow: 0 10px 18px rgba(0,0,0,.35); filter: brightness(.98); }
-    .btn:focus{ outline:none; box-shadow: 0 0 0 3px rgba(90,168,255,.20), 0 14px 30px rgba(0,0,0,.35); }
-
-    .btn-good{ background: linear-gradient(180deg, rgba(26, 156, 99, .98), rgba(9, 66, 44, .98)); }
-    .btn-bad{  background: linear-gradient(180deg, rgba(214, 33, 54, .98), rgba(102, 10, 22, .98)); }
-
-    .btn-secondary{
-      background: linear-gradient(180deg, rgba(255, 204, 0, .98), rgba(204, 153, 0, .98));
-      border: 1px solid rgba(0,0,0,.55);
-      color: #0b1220;
-      box-shadow: 0 10px 18px rgba(0,0,0,.28);
-      border-radius:14px;
-      padding:10px 12px;
-      font-weight:900;
-      cursor:pointer;
-      transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
-      position: relative;
-      overflow: hidden;
-      touch-action: manipulation;
-    }
-    .btn-secondary::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      background: radial-gradient(380px 120px at 30% 0%, rgba(255,255,255,.28), transparent 60%);
-      opacity:.8;
-      pointer-events:none;
-    }
-    .btn-secondary:active{ transform: translateY(1px); filter: brightness(.98); }
-    .btn-secondary:focus{ outline:none; box-shadow: 0 0 0 3px rgba(255, 204, 0, .22), 0 10px 18px rgba(0,0,0,.28); }
-
-    .action-buttons{ display:flex; gap:10px; flex-wrap:wrap; }
-
-    .row{
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      align-items:center;
-      flex-wrap:wrap;
-    }
-
-    .progress{
-      height:10px;
-      background: #0b0b0b;
-      border:1px solid rgba(255,255,255,.12);
-      border-radius:999px;
-      overflow:hidden;
-    }
-    .bar{
-      height:100%;
-      width:0%;
-      background: linear-gradient(90deg, rgba(90,168,255,.9), rgba(49,210,139,.9));
-      transition: width .18s linear;
-    }
-
-    .log{
-      padding:0;
-      margin:0;
-      list-style:none;
-      max-height: 520px;
-      overflow:auto;
-    }
-
-    .log li{
-      padding:12px 14px;
-      border-bottom:1px solid rgba(255,255,255,.09);
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      font-weight:800;
-      letter-spacing:.2px;
-      background: #050505;
-      animation: pop .18s ease-out;
-    }
-
-    .log li:last-child{ border-bottom:none; }
-
-    .tag{
-      font-size:12px;
-      font-weight:900;
-      padding:6px 10px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.14);
-      color: rgba(255,255,255,.92);
-    }
-
-    .ok{ color: rgba(49,210,139,.98); }
-    .no{ color: rgba(255,77,109,.98); }
-
-    .tag.ok{ background: rgba(49,210,139,.12); border-color: rgba(49,210,139,.30); }
-    .tag.no{ background: rgba(255,77,109,.12); border-color: rgba(255,77,109,.30); }
-
-    @keyframes pop{ from{ transform: translateY(4px); opacity:.0; } to{ transform: translateY(0); opacity:1; } }
-
-    .hint{
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.25;
-    }
-
-    .kbd{
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size:12px;
-      padding:2px 6px;
-      border:1px solid rgba(255,255,255,.18);
-      border-bottom-color: rgba(255,255,255,.10);
-      border-radius:8px;
-      background: rgba(255,255,255,.06);
-      color: rgba(255,255,255,.92);
-      box-shadow: 0 3px 0 rgba(0,0,0,.22);
-    }
-
-    .disabled{
-      opacity:.55;
-      pointer-events:none;
-      filter:saturate(.85);
-    }
-
-    .flash{ animation: flash .14s ease-in; }
-    @keyframes flash{ from{ transform: scale(.995); } to{ transform: scale(1); } }
-
-    .log::-webkit-scrollbar{ width:10px; }
-    .log::-webkit-scrollbar-thumb{ background: rgba(255,255,255,.12); border-radius:999px; border:2px solid transparent; background-clip: content-box; }
-    .log::-webkit-scrollbar-track{ background: transparent; }
-
-    .snow{
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      pointer-events: none;
-      overflow: hidden;
-    }
-    .snow span{
-      position: absolute;
-      top: -10vh;
-      left: 0;
-      width: var(--s);
-      height: var(--s);
-      border-radius: 50%;
-      background: rgba(255,255,255,1);
-      filter: blur(0px);
-      box-shadow: 0 0 8px rgba(255,255,255,.35);
-      opacity: var(--o);
-      transform: translateX(var(--x));
-      animation: fall var(--d) linear infinite;
-    }
-    @keyframes fall{
-      to{ transform: translateX(var(--x)) translateY(120vh); }
-    }
-
-    .toggles{ display:flex; gap:10px; flex-wrap:wrap; }
-    .toggle{
-      padding:10px 12px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.14);
-      background:#000;
-      color: rgba(255,255,255,.92);
-      font-weight:900;
-      cursor:pointer;
-      transition: transform .12s ease, filter .12s ease, box-shadow .12s ease;
-      user-select:none;
-      touch-action: manipulation;
-      white-space:nowrap;
-    }
-    .toggle:active{ transform: translateY(1px); filter: brightness(.98); }
-    .toggle.on{
-      border-color: rgba(90,168,255,.40);
-      box-shadow: 0 0 0 3px rgba(90,168,255,.18);
-    }
-    .toggle.util{
-      border-color: rgba(255,255,255,.22);
-      opacity:.92;
-    }
+    .big-area{padding:20px 16px 16px; display:flex; flex-direction:column; gap:14px; min-height:360px;}
+    .word-box{background:#070707; border:1px solid rgba(255,255,255,.14); border-radius:18px; padding:18px 16px; display:grid; place-items:center;}
+    .word-box.idle{background:linear-gradient(180deg, rgba(24,72,170,.98), rgba(10,35,88,.98)); border-color:rgba(90,168,255,.45);}
+    .word{font-size:clamp(44px,6.2vw,78px); font-weight:900; letter-spacing:.5px; margin:0; user-select:none; text-align:center; line-height:1.05; text-shadow:0 10px 26px rgba(0,0,0,.35);}
+    .sub{color:var(--muted); font-size:13px; line-height:1.25;}
+    .btn-row{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+    .btn{border:1px solid rgba(255,255,255,.14); border-radius:18px; padding:14px; font-weight:900; letter-spacing:.4px; cursor:pointer; user-select:none; position:relative; box-shadow:0 14px 30px rgba(0,0,0,.35); transition:transform .12s ease, box-shadow .12s ease, filter .12s ease; overflow:hidden; display:flex; align-items:center; justify-content:center; gap:10px; font-size:20px; min-height:58px; color:#fff;}
+    .btn::before{content:""; position:absolute; inset:0; background:radial-gradient(400px 120px at 30% 0%, rgba(255,255,255,.22), transparent 60%); opacity:.7; pointer-events:none;}
+    .btn:active{transform:translateY(2px) scale(.99); box-shadow:0 10px 18px rgba(0,0,0,.35); filter:brightness(.98);}
+    .btn:focus{outline:none; box-shadow:0 0 0 3px rgba(90,168,255,.20), 0 14px 30px rgba(0,0,0,.35);}
+    .btn-good{background:linear-gradient(180deg, rgba(26,156,99,.98), rgba(9,66,44,.98));}
+    .btn-bad{background:linear-gradient(180deg, rgba(214,33,54,.98), rgba(102,10,22,.98));}
+    .btn-secondary{background:linear-gradient(180deg, rgba(255,204,0,.98), rgba(204,153,0,.98)); border:1px solid rgba(0,0,0,.55); color:#0b1220; box-shadow:0 10px 18px rgba(0,0,0,.28); border-radius:14px; padding:10px 12px; font-weight:900; cursor:pointer; transition:transform .12s ease, box-shadow .12s ease, filter .12s ease; position:relative; overflow:hidden;}
+    .btn-secondary::before{content:""; position:absolute; inset:0; background:radial-gradient(380px 120px at 30% 0%, rgba(255,255,255,.28), transparent 60%); opacity:.8; pointer-events:none;}
+    .btn-secondary:active{transform:translateY(1px); filter:brightness(.98);}
+    .btn-secondary:focus{outline:none; box-shadow:0 0 0 3px rgba(255,204,0,.22), 0 10px 18px rgba(0,0,0,.28);}
+    .action-buttons{display:flex; gap:10px; flex-wrap:wrap;}
+    .row{display:flex; justify-content:space-between; gap:10px; align-items:center; flex-wrap:wrap;}
+    .progress{height:10px; background:#0b0b0b; border:1px solid rgba(255,255,255,.12); border-radius:999px; overflow:hidden;}
+    .bar{height:100%; width:0%; background:linear-gradient(90deg, rgba(90,168,255,.9), rgba(49,210,139,.9)); transition:width .18s linear;}
+    .log{padding:0; margin:0; list-style:none; max-height:520px; overflow:auto;}
+    .log li{padding:12px 14px; border-bottom:1px solid rgba(255,255,255,.09); display:flex; align-items:center; justify-content:space-between; gap:10px; font-weight:800; letter-spacing:.2px; background:#050505; animation:pop .18s ease-out;}
+    .log li:last-child{border-bottom:none;}
+    .tag{font-size:12px; font-weight:900; padding:6px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.14); color:rgba(255,255,255,.92);}
+    .ok{color:rgba(49,210,139,.98);}
+    .no{color:rgba(255,77,109,.98);}
+    .tag.ok{background:rgba(49,210,139,.12); border-color:rgba(49,210,139,.30);}
+    .tag.no{background:rgba(255,77,109,.12); border-color:rgba(255,77,109,.30);}
+    @keyframes pop{from{transform:translateY(4px); opacity:0;} to{transform:translateY(0); opacity:1;}}
+    .hint{color:var(--muted); font-size:12px; line-height:1.25;}
+    .kbd{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size:12px; padding:2px 6px; border:1px solid rgba(255,255,255,.18); border-bottom-color:rgba(255,255,255,.10); border-radius:8px; background:rgba(255,255,255,.06); color:rgba(255,255,255,.92); box-shadow:0 3px 0 rgba(0,0,0,.22);}
+    .disabled{opacity:.55; pointer-events:none; filter:saturate(.85);}
+    .flash{animation:flash .14s ease-in;}
+    @keyframes flash{from{transform:scale(.995);} to{transform:scale(1);}}
+    .log::-webkit-scrollbar{width:10px;}
+    .log::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12); border-radius:999px; border:2px solid transparent; background-clip:content-box;}
+    .log::-webkit-scrollbar-track{background:transparent;}
+    .snow{position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden;}
+    .snow span{position:absolute; top:-10vh; left:0; width:var(--s); height:var(--s); border-radius:50%; background:rgba(255,255,255,1); filter:blur(0); box-shadow:0 0 8px rgba(255,255,255,.35); opacity:var(--o); transform:translateX(var(--x)); animation:fall var(--d) linear infinite;}
+    @keyframes fall{to{transform:translateX(var(--x)) translateY(120vh);}}
+    .toggles{display:flex; gap:10px; flex-wrap:wrap;}
+    .toggle{padding:10px 12px; border-radius:14px; border:1px solid rgba(255,255,255,.14); background:#000; color:rgba(255,255,255,.92); font-weight:900; cursor:pointer; transition:transform .12s ease, filter .12s ease, box-shadow .12s ease; user-select:none;}
+    .toggle:active{transform:translateY(1px); filter:brightness(.98);}
+    .toggle.on{border-color:rgba(90,168,255,.40); box-shadow:0 0 0 3px rgba(90,168,255,.18);}
+    .toggle.util{border-color:rgba(255,255,255,.22); opacity:.92;}
   </style>
 </head>
 <body>
-
   <div class="snow" aria-hidden="true"></div>
 
   <div class="app">
-
     <div class="top">
       <div class="crests" aria-label="Hogwarts crests">
-        <div class="crest-slot"><img alt="Gryffindor"  src="images/gryffindor.png"></div>
-        <div class="crest-slot"><img alt="Slytherin"   src="images/slytherin.png"></div>
-        <div class="crest-slot"><img alt="Hufflepuff"  src="images/hufflepuff.png"></div>
-        <div class="crest-slot"><img alt="Ravenclaw"   src="images/ravenclaw.png"></div>
+        <div class="crest-slot"><img alt="Gryffindor" src="images/gryffindor.png"></div>
+        <div class="crest-slot"><img alt="Slytherin" src="images/slytherin.png"></div>
+        <div class="crest-slot"><img alt="Hufflepuff" src="images/hufflepuff.png"></div>
+        <div class="crest-slot"><img alt="Ravenclaw" src="images/ravenclaw.png"></div>
       </div>
-
       <div class="stats">
         <div class="pill" id="scorePill">Score: <strong id="score">0</strong></div>
         <div class="pill">Right: <strong id="rightCount">0</strong> <span>R</span></div>
@@ -449,14 +155,12 @@
     <div class="grid">
       <div class="card">
         <div class="card-head">
-          <div class="title" id="title">Reading: Right or Wrong</div>
-
+          <div class="title">Reading: Right or Wrong</div>
           <div class="controls">
             <div>
-              <label id="patternsLabel">Patterns</label><br>
+              <label>Patterns</label><br>
               <div class="toggles" id="patternToggles"></div>
             </div>
-
             <div>
               <label for="duration">Time</label><br>
               <select id="duration">
@@ -465,7 +169,6 @@
                 <option value="90">90 sec</option>
               </select>
             </div>
-
             <div>
               <label>&nbsp;</label><br>
               <div class="action-buttons">
@@ -473,32 +176,19 @@
                 <button class="btn-secondary" id="resetBtn" type="button">Reset</button>
               </div>
             </div>
-
           </div>
         </div>
 
         <div class="big-area">
-          <div class="word-box" id="wordBox">
-            <h1 class="word" id="word">Press Start</h1>
-          </div>
-
-          <div class="progress" aria-label="Time progress">
-            <div class="bar" id="bar"></div>
-          </div>
-
+          <div class="word-box" id="wordBox"><h1 class="word" id="word">Press Start</h1></div>
+          <div class="progress" aria-label="Time progress"><div class="bar" id="bar"></div></div>
           <div class="btn-row">
             <button class="btn btn-good disabled" id="rightBtn" type="button" aria-label="Right">RIGHT</button>
-            <button class="btn btn-bad  disabled" id="wrongBtn" type="button" aria-label="Wrong">WRONG</button>
+            <button class="btn btn-bad disabled" id="wrongBtn" type="button" aria-label="Wrong">WRONG</button>
           </div>
-
           <div class="row">
             <div class="sub" id="patternHint">Pattern: —</div>
-            <div class="hint">
-              Hotkeys:
-              <span class="kbd">R</span> Right,
-              <span class="kbd">W</span> Wrong,
-              <span class="kbd">Space</span> Start/Pause
-            </div>
+            <div class="hint">Hotkeys: <span class="kbd">R</span> Right, <span class="kbd">W</span> Wrong, <span class="kbd">Space</span> Start/Pause</div>
           </div>
         </div>
       </div>
@@ -520,7 +210,6 @@
     const make = (arr, p) => arr.map(w => ({ w, p }));
     const uniq = (arr) => arr.filter((v,i,a)=>a.indexOf(v)===i);
 
-    // Fisher–Yates shuffle
     function shuffle(a){
       for (let i = a.length - 1; i > 0; i--){
         const j = Math.floor(Math.random() * (i + 1));
@@ -529,15 +218,17 @@
       return a;
     }
 
-    // ============================
-    // MODES
-    // ============================
-    // patterns = your existing pattern-groups mode
-    // letters  = special CVC button switches to "letters/sounds" mode (order from the PDF)
-    let mode = "patterns";
+    // The uploaded PDF expired in the tool environment, so this is a standard phonics order.
+    // Re-upload the PDF if you need the exact order from the file.
+    const SINGLE_SOUNDS_ORDER = [
+      "s","a","t","i","p","n",
+      "c","k","e","h","r","m","d",
+      "g","o","u","l","f","b",
+      "j","z","w","v","y","x","q"
+    ];
 
     // ============================
-    // PSEUDO (auto: only when EXACTLY ONE non-CVC group selected)
+    // PSEUDO WORDS
     // ============================
     const PSEUDO = {
       a_e:["nape","vame","labe","tase","pate","dake","rane","caze","mave","kase","wate","hase","bame","dape","zate","jape","gape","sate","fape","tape"],
@@ -545,89 +236,48 @@
       i_e:["nime","vile","mife","tibe","sipe","rife","kive","jite","lize","fipe","hime","pive","mive","zine","gike","bive","tine","wive","dime","sine"],
       o_e:["nobe","vone","mote","tobe","sote","dobe","lome","gote","pome","kone","jote","fobe","zote","hobe","rone","bome","cobe","vode","mone","tome"],
       u_e:["nube","vute","mune","tuke","sute","dune","lute","gube","pune","kute","june","fute","zune","hune","rube","bute","cune","vune","mube","tune"],
-
       ee:["meep","teek","neem","seeg","feen","greep","bleen","sheev","preel","treem","cheem","sleed","steem","weef","dreek","veem","speen","neep","jeen","leek"],
       ie:["pien","tiel","lien","mien","kien","zien","vied","fies","plien","brien","slied","grien","tien","mien","kied","zied","pried","tried","dried","flied"],
       oe:["foe","roe","boe","toed","foes","roes","toes","hoed","toen","foen","roen","boen","toef","roef","foef","boef","joes","koes","loes","noes"],
       ue:["plue","grue","flue","clued","glued","blued","trued","huing","ruing","suing","cuing","truing","gluing","cluing","bluish","trueish","hued","rued","sued","cued"],
-
+      ai:["bain","dain","fain","lain","nain","tain","vain","zaip","raim","mait"],
+      ay:["zay","bray","clay","dray","fray","gray","play","stay","tray","slay"],
+      igh:["bight","dight","figh","ligh","migh","pigh","sigh","tigh","wigh","zigh"],
+      oa:["boad","coad","goad","load","toad","woad","foat","roat","moan","koat"],
+      ea:["meak","teal","peal","deal","bead","zeat","heap","leap","neat","seat"],
+      ew:["mew","pew","tew","kew","zew","blew","flew","grew","trew","clew"],
+      oo:["boop","moog","foom","voot","zoon","sloop","droop","ploof","noom","toob"],
+      ir:["birn","firb","jirb","sirn","wirn","zirk","pirl","tirm","kirp","vird"],
+      er:["berp","derp","gerp","lerg","serp","verp","terg","merb","nerp","zerp"],
+      ur:["burm","durp","furm","hurm","kurm","murv","nurv","turm","yurm","zurv"],
       qu:["quab","quep","quim","quop","quut","quemp","quost","squeg","squop","squut","quaff","quolt","quark","quern","quill","quilt","quisk","quash","quend","quand"],
-
       aw:["nawl","braw","tawn","zawn","plawn","smaw","clawn","drall","graw","thawn","cawn","praw","jawl","traw","blawn","strawn","shawn","rawn","dawn","yawn"],
       al:["talm","yalk","valk","zalk","kalm","salp","talp","dalp","galm","walp","malf","calf","halm","palm","balm","salv","walm","balk","talk","walk"],
       au:["taul","faul","gaud","haud","daul","saul","vaul","zaul","rauf","sauf","paus","laun","caun","gaun","haun","daun","maul","haul","fault","pause"],
       ou:["mout","sout","lound","tound","gound","vout","zout","shound","plound","bround","dround","houn","foun","roun","clout","flout","sprout","stout","round","sound"],
-
       wr:["wrab","wrep","wrim","wrok","wrup","wreft","wrindle","wrenk","wrack","wreel","wrang","wronk","wrent","wretch","wready","wristle","wraph","wrush","wrisk","wramp"],
       ph:["phap","phep","phim","phop","phut","phane","phote","photal","phograph","phonic","phur","phest","phene","phore","phaser","photeen","phoned","phogram","phabic","phoric"],
       kn:["knab","knep","knim","knop","knut","knall","knash","knill","knost","knarf","knilk","knamp","knish","knerd","kniff","knuff","knand","knold","knarp","knass"],
-
       th:["thav","thim","thop","thun","thesh","thint","thrum","thrad","thlump","thrist","thand","thock","tharth","thent","tholt","thame","thove","thure","thind","thusk"],
       sh:["shab","shep","shim","shop","shut","shafe","shome","shipe","shote","shune","shank","shend","shind","shond","shund","sharf","sherb","shirf","shorf","shurf"],
       ch:["chab","chep","chim","chop","chut","chake","chome","chipe","chote","chune","chank","chend","chind","chond","chund","cherf","chirf","chorf","churf","chest"],
       ng:["zong","fang","hing","mang","pong","rung","tung","vang","wung","zing","clong","flang","prong","strang","thung","plung","snang","brung","dring","gling"],
       wh:["whap","whep","whim","whop","whut","whote","whune","whend","whint","whond","whund","whisp","whush","whack","whomp","wharf","whirl","whine","wheat","wheel"],
-
       ar:["zarf","marb","tarb","larp","garp","narb","harf","jarb","carf","parn","tarm","darp","farn","barm","garn","zarn","sark","wark","lark","spark"],
-      or:["zorn","lork","torm","morb","sorf","gorn","tork","vorn","dorb","bort","corm","dorn","forb","hork","jort","korn","lorn","morn","porm","sorn"],
-      r3:["birn","gerp","nurv","firb","terg","hurm","sirn","derp","kurm","verp","jirb","lerg","murv","pirn","serp","turm","wirn","zerp","yurm","xirn"],
-
-      // NEW: oo
-      oo:["boop","goom","nood","voot","zoon","choop","snoop","troon","ploof","groop","moof","loob","foom","doot","koom","woot","stoon","bloof","droop","sloom"],
-
-      // NEW: ai, ay, igh, oa, ea(=ee), ew
-      ai:["paim","naid","laip","taim","raig","saif","mait","gaip","daim","haif","vaim","zaip","kaim","faid","wail","bain","cail","dain","hail","jain"],
-      ay:["plaiy","braym","frayn","slayp","clayn","traym","spayn","drayp","crayn","flayn","grayn","stayn","prayn","blayp","shayn","whayp","frayt","crayt","slayt","grayt"],
-      igh:["nighp","lighm","tighn","sighd","righf","pighk","mighl","fight","hight","bight","dight","night","light","right","sight","wight","tight","might","fight","slight"],
-      oa:["moat","goat","boat","toad","road","load","soap","foam","coat","loan","moan","roam","hoax","loaf","oaks","soak","cloak","groan","float","bloat"],
-      ea:["bead","meat","team","seat","heap","leap","peach","reach","teach","cheap","clean","dream","cream","steam","beach","leaf","mean","meal","peak","neat"],
-      ew:["new","few","chew","stew","blew","grew","threw","screw","flew","drew","brew","skew","renew","review","chewed","stewed","newest","fewest","chewer","stewpan"]
+      or:["zorn","lork","torm","morb","sorf","gorn","tork","vorn","dorb","bort","corm","dorn","forb","hork","jort","korn","lorn","morn","porm","sorn"]
     };
 
     // ============================
-    // PATTERN DETECTION (for exclusivity filter)
+    // PATTERN DETECTION + EXCLUSIVITY
     // ============================
-    // IMPORTANT: we add ai/ay/igh/oa/ea/ew/oo so they get excluded from other groups unless selected
     const PATTERN_RULES = {
-      a_e: /a.e/,
-      e_e: /e.e/,
-      i_e: /i.e/,
-      o_e: /o.e/,
-      u_e: /u.e/,
-
-      ee: /ee/,
-      ie: /ie/,
-      oe: /oe/,
-      ue: /ue/,
-
-      qu: /qu/,
-      aw: /aw/,
-      al: /al/,
-      au: /au/,
-      ou: /ou/,
-
-      wr: /^wr/,
-      ph: /ph/,
-      kn: /^kn/,
-
-      th: /th/,
-      ng: /ng/,
-      sh: /sh/,
-      ch: /ch/,
-      wh: /^wh/,
-
-      ar: /ar/,
-      or: /or/,
-      r3: /(ir|er|ur)/,
-
-      // NEW
-      ai: /ai/,
-      ay: /ay/,
-      igh: /igh/,
-      oa: /oa/,
-      ea: /ea/,
-      ew: /ew/,
-      oo: /oo/
+      a_e:/a.e/, e_e:/e.e/, i_e:/i.e/, o_e:/o.e/, u_e:/u.e/,
+      ee:/ee/, ie:/ie/, oe:/oe/, ue:/ue/,
+      ai:/ai/, ay:/ay\b/, igh:/igh/, oa:/oa/, ea:/ea/, ew:/ew/, oo:/oo/,
+      qu:/qu/, aw:/aw/, al:/al/, au:/au/, ou:/ou/,
+      wr:/^wr/, ph:/ph/, kn:/^kn/,
+      th:/th/, ng:/ng/, sh:/sh/, ch:/ch/, wh:/^wh/,
+      ar:/ar/, or:/or/, ir:/ir/, er:/er/, ur:/ur/
     };
 
     function detectPatterns(word){
@@ -639,17 +289,12 @@
       return found;
     }
 
-    // Strict exclusivity:
-    // - CVC words must not contain ANY of the patterns above
-    // - words from group X must contain X and must not contain unselected patterns
     function isAllowedWord(wordObj, selectedSet){
       const word = wordObj.w;
       const fromKey = wordObj.__groupKey || null;
       const hits = new Set(detectPatterns(word));
 
-      if (fromKey === "cvc"){
-        return hits.size === 0;
-      }
+      if (fromKey === "cvc") return hits.size === 0;
 
       const selectedNonCvc = new Set([...selectedSet].filter(k => k !== "cvc"));
 
@@ -658,14 +303,13 @@
       for (const h of hits){
         if (!selectedNonCvc.has(h)) return false;
       }
-
       return true;
     }
 
     // ============================
-    // REAL WORD LISTS (your existing lists)
+    // REAL WORD LISTS
     // ============================
-    const WORDS_CVC = make([
+    const WORDS_CVC_REAL = make([
       "cat","bat","hat","mat","rat","cap","tap","map","nap","lap",
       "bed","red","pen","hen","web","jet","set","pet","ten","men",
       "pig","sit","pin","fin","kid","lid","hit","fit","rim","wig",
@@ -673,606 +317,323 @@
       "sun","cup","bus","rug","mud","bud","bug","hut","run","fun"
     ], "CVC");
 
-    const WORDS_AE = make([
-      "cake","bake","lake","make","take","rake","fake","shake","snake","plate",
-      "gate","late","mate","date","rate","fate","hate","state","skate","crate",
-      "name","same","game","tame","flame","frame","brave","save","wave","cave",
-      "face","case","base","lace","race","place","space","grace","shape","tape"
-    ], "a_e");
+    const WORDS_CVC_PSEUDO = make([
+      "sat","pat","nat","tas","sap","pan","nip","pit","tin","sim",
+      "dat","dap","pem","teg","gop","mog","lum","fub","bim","zog",
+      "vab","wip","yot","xam","quap","zad","ket","hob","rud","fim",
+      "lat","lem","lom","lub","bap","bep","bop","bup","gip","gub"
+    ], "CVC (pseudo)");
 
-    const WORDS_EE_SPLIT = make(uniq([
-      "these","theme","here","mere","gene","scene","eve","even","complete","delete",
-      "compete","extreme","supreme","serene","athlete","severe","sincere","recede","precede","concrete",
-      "complete","delete","compete","extreme","supreme","serene","theme","these","here","mere",
-      "gene","scene","eve","even","severe","sincere","recede","precede","concrete","athlete"
-    ]).slice(0,40), "e_e");
+    const WORDS_CVC = [...WORDS_CVC_REAL, ...WORDS_CVC_PSEUDO];
 
-    const WORDS_IE_SPLIT = make(uniq([
-      "like","bike","hike","kite","time","five","nine","line","mine","pine",
-      "ride","side","wide","hide","slide","smile","drive","stripe","prize","white",
-      "life","wife","pipe","ripe","site","bite","dive","mile","file","tile",
-      "while","shine","spine","price","slice","write","chime","spike","prime","glide",
-      "bride","crime","trite","chive","slime"
-    ]).slice(0,45), "i_e");
+    const WORDS_AE = make(["cake","bake","lake","make","take","rake","fake","shake","snake","plate","gate","late","mate","date","rate","fate","hate","state","skate","crate","name","same","game","tame","flame","frame","brave","save","wave","cave","face","case","base","lace","race","place","space","grace","shape","tape"], "a_e");
+    const WORDS_EE_SPLIT = make(uniq(["these","theme","here","mere","gene","scene","eve","even","complete","delete","compete","extreme","supreme","serene","athlete","severe","sincere","recede","precede","concrete","complete","delete","compete","extreme","supreme","serene","theme","these","here","mere","gene","scene","eve","even","severe","sincere","recede","precede","concrete","athlete"]).slice(0,40), "e_e");
+    const WORDS_IE_SPLIT = make(uniq(["like","bike","hike","kite","time","five","nine","line","mine","pine","ride","side","wide","hide","slide","smile","drive","stripe","prize","white","life","wife","pipe","ripe","site","bite","dive","mile","file","tile","while","shine","spine","price","slice","write","chime","spike","prime","glide","bride","crime","trite","chive","slime"]).slice(0,45), "i_e");
+    const WORDS_OE_SPLIT = make(uniq(["home","rope","hope","bone","cone","tone","nose","rose","stone","stove","globe","probe","close","those","broke","chose","smoke","spoke","woke","drove","note","vote","code","mode","tote","slope","scope","robe","hole","pole","role","sole","joke","poke","phone","zone","dome","alone","store","before","shore","more","stole","bore"]).slice(0,42), "o_e");
+    const WORDS_UE_SPLIT = make(uniq(["cube","cute","tune","mule","use","fuse","tube","flute","prune","June","rule","rude","dune","duke","brute","mute","refuse","excuse","amuse","acute","include","reduce","produce","bugle","dupe","lute","rune","pure","cure","secure","ensure","future","nature","mixture","adventure","picture","capture","texture","feature","gesture","figure","measure","treasure","closure","allure"]).slice(0,45), "u_e");
 
-    const WORDS_OE_SPLIT = make(uniq([
-      "home","rope","hope","bone","cone","tone","nose","rose","stone","stove",
-      "globe","probe","close","those","broke","chose","smoke","spoke","woke","drove",
-      "note","vote","code","mode","tote","slope","scope","robe","hole","pole",
-      "role","sole","joke","poke","phone","zone","dome","alone","store","before",
-      "shore","more","stole","bore"
-    ]).slice(0,42), "o_e");
+    const WORDS_EE = make(uniq(["see","bee","tree","free","green","seed","need","feed","weed","week","meet","feet","sweet","sheet","sheep","sleep","deep","keep","peel","feel","teen","seen","seek","peek","cheek","teeth","heel","steel","speed","greed","bleed","creep","steep","beep","jeep","screen","between","seem","queen","cheese","freeze","breeze","agree","three","fifteen"]).slice(0,45), "ee");
+    const WORDS_IE = make(uniq(["pie","pies","tie","ties","tied","tying","lie","lies","lied","lying","die","dies","died","dying","vie","vies","vied","vying","cries","cried","tries","tried","flies","flied","spies","spied","dries","dried","pries","pried","fries","fried","plies","plied","skies","skied","untie","unties","untied","untying"]).slice(0,40), "ie");
+    const WORDS_OE = make(uniq(["toe","toes","toed","toeing","foe","foes","roe","roes","woe","woes","hoe","hoes","sloe","sloes","floe","floes","throe","throes","canoe","canoes","canoed","canoeing","oboe","oboes","oboeist","oboeists","toenail","toenails","toehold","toeholds","toeline","toelines","foehold","foeholds","toed","toes","toe","foe","roe","woe"]).slice(0,40), "oe");
+    const WORDS_UE = make(uniq(["blue","blues","bluer","bluest","bluing","clue","clues","clued","cluing","glue","glues","glued","gluing","true","truer","truest","due","dues","sue","sues","sued","suing","hue","hues","rue","rues","rued","ruing","cue","cues","cued","cuing","rescue","rescues","rescued","rescuing","statue","statues","issue","issues"]).slice(0,40), "ue");
 
-    const WORDS_UE_SPLIT = make(uniq([
-      "cube","cute","tune","mule","use","fuse","tube","flute","prune","June",
-      "rule","rude","dune","duke","brute","mute","refuse","excuse","amuse","acute",
-      "include","reduce","produce","bugle","dupe","lute","rune","pure","cure","secure",
-      "ensure","future","nature","mixture","adventure","picture","capture","texture","feature","gesture",
-      "figure","measure","treasure","closure","allure"
-    ]).slice(0,45), "u_e");
+    const WORDS_AI = make(uniq(["rain","pain","main","gain","mail","sail","tail","nail","fail","pail","train","brain","chain","plain","stain","trail","claim","paid","maid","laid","wait","bait"]).slice(0,45), "ai");
+    const WORDS_AY = make(uniq(["day","may","say","way","play","stay","tray","clay","gray","pray","delay","display","repay","holiday"]).slice(0,45), "ay");
+    const WORDS_IGH = make(uniq(["high","sigh","light","night","right","tight","fight","might","sight","bright","flight","slight"]).slice(0,45), "igh");
+    const WORDS_OA = make(uniq(["boat","coat","goat","road","toad","load","soap","loaf","goal","coal","float","throat","coach","roast"]).slice(0,45), "oa");
+    const WORDS_EA_EE = make(uniq(["eat","seat","meat","heat","bead","deal","seal","team","dream","clean","please","each","peach","reach","teach","mean","bean"]).slice(0,45), "ea (ee)");
+    const WORDS_EW = make(uniq(["new","few","chew","stew","blew","flew","grew","threw","crew","drew"]).slice(0,45), "ew");
+    const WORDS_OO = make(uniq(["moon","soon","food","cool","pool","tool","zoo","boot","root","roof","room","spoon","broom","school","smooth"]).slice(0,45), "oo");
+    const WORDS_IR = make(uniq(["bird","birds","girl","girls","first","third","shirt","skirt","dirt","firm","stir","stirs","stirred","stirring","whirl","whirls","chirp","chirps"]).slice(0,45), "ir");
+    const WORDS_ER = make(uniq(["her","term","fern","perch","perched","verb","verbs","serve","served","serving","stern","person","perfect","teacher","letter","better","winter","sister"]).slice(0,45), "er");
+    const WORDS_UR = make(uniq(["fur","turn","turns","turned","turning","burn","burns","burned","burning","curl","curls","curled","hurt","hurts","hurting","surf","surfs","nurse","purple"]).slice(0,45), "ur");
 
-    const WORDS_EE = make(uniq([
-      "see","bee","tree","free","green","seed","need","feed","weed","week",
-      "meet","feet","sweet","sheet","sheep","sleep","deep","keep","peel","feel",
-      "teen","seen","seek","peek","cheek","teeth","heel","steel","speed","greed",
-      "bleed","creep","steep","beep","jeep","screen","between","seem","queen","cheese",
-      "freeze","breeze","agree","three","fifteen"
-    ]).slice(0,45), "ee");
-
-    const WORDS_IE = make(uniq([
-      "pie","pies","tie","ties","tied","tying","lie","lies","lied","lying",
-      "die","dies","died","dying","vie","vies","vied","vying",
-      "cries","cried","tries","tried","flies","flied","spies","spied",
-      "dries","dried","pries","pried","fries","fried","plies","plied",
-      "skies","skied","untie","unties","untied","untying"
-    ]).slice(0,40), "ie");
-
-    const WORDS_OE = make(uniq([
-      "toe","toes","toed","toeing","foe","foes","roe","roes","woe","woes",
-      "hoe","hoes","sloe","sloes","floe","floes","throe","throes",
-      "canoe","canoes","canoed","canoeing","oboe","oboes","oboeist","oboeists",
-      "toenail","toenails","toehold","toeholds","toeline","toelines",
-      "foehold","foeholds","toed","toes","toe","foe","roe","woe"
-    ]).slice(0,40), "oe");
-
-    const WORDS_UE = make(uniq([
-      "blue","blues","bluer","bluest","bluing","clue","clues","clued","cluing","glue",
-      "glues","glued","gluing","true","truer","truest","due","dues","sue","sues",
-      "sued","suing","hue","hues","rue","rues","rued","ruing","cue","cues",
-      "cued","cuing","rescue","rescues","rescued","rescuing","statue","statues","issue","issues"
-    ]).slice(0,40), "ue");
-
-    const WORDS_QU = make(uniq([
-      "quiz","quit","quill","quick","quilt","quack","quench","queen","queens","quest",
-      "quiet","quite","quake","quakes","quaked","quaking","quote","quotes","quoted","quoting",
-      "quarter","quarters","quartz","quality","quantity","question","questions","request","requests","require",
-      "squeak","squeaks","squeaked","squeaking","squid","squids","squish","squishes","squished","squishing",
-      "equal","equals","equate","equator","sequence"
-    ]).slice(0,45), "qu");
-
-    const WORDS_AW = make(uniq([
-      "saw","saws","sawed","sawing","raw","jaw","law","paw","claw","draw",
-      "straw","crawl","dawn","yawn","lawn","hawk","squawk","flaw","thaw","shawl",
-      "awful","awesome","awkward","lawful","drawn","drawer","jawbone","pawprint",
-      "claws","draws","drawing","thaws","lawns","hawks","flaws","paws","strawberry","withdraw"
-    ]).slice(0,40), "aw");
-
-    const WORDS_AL = make(uniq([
-      "all","ball","call","fall","hall","mall","tall","wall","stall","small",
-      "walk","walks","walked","walking","talk","talks","talked","talking","chalk","chalks",
-      "chalked","chalky","stalk","stalks","stalked","stalking","balk","balks","balked","balking",
-      "calm","calms","calmed","calming","palm","palms","palmed","palming","half","halves"
-    ]).slice(0,40), "al");
-
-    const WORDS_AU = make(uniq([
-      "haul","hauls","hauled","hauling","fault","faults","faulted","gaunt","haunt","haunts",
-      "haunted","haunting","cause","causes","caused","causing","pause","pauses","paused","pausing",
-      "sauce","sauces","launch","launches","launched","launching","author","authors","autumn","audit",
-      "audits","audited","audio","audience","August","auction","auctions","vault","vaults","vaulted"
-    ]).slice(0,40), "au");
-
-    const WORDS_OU = make(uniq([
-      "out","outs","shout","shouts","shouted","shouting","loud","louder","loudest","cloud",
-      "clouds","cloudy","round","rounds","rounded","rounding","sound","sounds","sounded","sounding",
-      "found","count","counts","counted","counting","mount","mounts","mounted","mounting","house",
-      "houses","mouse","south","mouth","pound","pounds","pounded","pounding","ground",
-      "grounds","grounded","clown","crown","crowns","town","towns","browns","frowns"
-    ]).slice(0,45), "ou");
-
-    const WORDS_WR = make(uniq([
-      "wrap","wraps","wrapped","wrapping","wreck","wrecks","wrecked","wrecking","wrist","wrists",
-      "write","writes","writing","writer","writers","wrong","wring","wrings","wrung","wringing",
-      "wrench","wrenches","wrenched","wrenching","wrinkle","wrinkles","wrinkled","wrinkling","wreath","wreaths",
-      "wrestle","wrestles","wrestled","wrestling","wrath","wry","wren","wrack","wretched","wraparound"
-    ]).slice(0,40), "wr");
-
-    const WORDS_PH = make(uniq([
-      "phone","phones","phoned","phoning","photo","photos","photograph","photographs","graph","graphs",
-      "phrase","phrases","phonics","alphabet","elephant","dolphin","trophy","trophies","sphinx","pharmacy",
-      "physical","physics","philosophy","phase","phases","phoneme","phonetic","sapphire","nephew","triumph",
-      "pamphlet","symphony","sympathy","telephone","microphone","headphones","photobook","photoframe","graphing","graphic",
-      "photon","phony","phobia","phonology","phoned"
-    ]).slice(0,45), "ph");
-
-    const WORDS_KN = make(uniq([
-      "knit","knits","knitted","knitting","knot","knots","knotted","knotting","knee","knees",
-      "kneel","kneels","kneeled","kneeling","knife","knives","knock","knocks","knocked","knocking",
-      "knob","knobs","knuckle","knuckles","knuckled","knuckling","knave","knaves","knell","knells",
-      "knelt","knight","knights","kneecap","kneecaps","knapsack","knapsacks","knotwork","knitwear","knocking"
-    ]).slice(0,40), "kn");
-
-    const WORDS_TH = make(uniq([
-      "thin","thick","thank","think","thumb","thump","thud","thrush","thrift","thrive",
-      "three","throw","throws","throwing","thread","threads","threat","threats","throat","throats",
-      "bath","baths","path","paths","math","moth","moths","both","with","cloth",
-      "teeth","tooth","toothbrush","north","south","fourth","tenth","thirty","thirst","thirsty",
-      "thunder","thunders","theft","thorn","thorns"
-    ]).slice(0,45), "th");
-
-    const WORDS_NG = make(uniq([
-      "ring","rings","ringing","king","kings","wing","wings","sing","sings","singing",
-      "thing","things","long","longer","longest","song","songs","bang","bangs","banging",
-      "hang","hangs","hanging","lung","lungs","hung","young","youngest","strong","stronger",
-      "string","strings","stringing","bring","brings","bringing","sling","slings","slinging","clang",
-      "clangs","clanging","sprang","spring","springs"
-    ]).slice(0,45), "ng");
-
-    const WORDS_SH = make(uniq([
-      "ship","ships","shop","shops","shut","shuts","shell","shelf","shark","sharks",
-      "shake","shakes","shaking","shine","shines","shining","short","shirt","sharp","shape",
-      "sheep","sheet","sheets","fish","dish","wish","wishes","wished","wash","washes",
-      "washed","washing","brush","brushes","brushed","crash","crashes","crashed","flash","flashes",
-      "trash","splash","shower","shallow","shadow"
-    ]).slice(0,45), "sh");
-
-    const WORDS_CH = make(uniq([
-      "chin","chat","chats","chip","chips","chop","chops","chopped","chopping","chess",
-      "check","checks","checked","checking","chicken","chickens","chair","chairs","cheer","cheers",
-      "cheered","cheering","cherry","cherries","cheese","chalk","chase","chases","chased","chasing",
-      "bench","benches","lunch","lunches","bunch","bunches","rich","much","such","pitch",
-      "match","matches","matched","matching","champ","chomp"
-    ]).slice(0,45), "ch");
-
-    const WORDS_WH = make(uniq([
-      "what","when","where","which","while","white","whale","whales","wheel","wheels",
-      "whip","whips","whipped","whipping","whisk","whisks","whisked","whisking","whisper","whispers",
-      "whispered","whispering","whistle","whistles","whistled","whistling","whack","whacks","whacked","whacking",
-      "wheat","whenever","wherever","whatever","whichever","whim","whims","whimsy","whiny","whine",
-      "whines","whined","whining","wharf","wharfs"
-    ]).slice(0,45), "wh");
-
-    const WORDS_AR = make(uniq([
-      "car","cars","card","cards","cart","carts","park","parks","part","parts",
-      "dark","darks","hard","harm","harp","bark","barn","farm","mark","march",
-      "start","star","stars","smart","shark","sharp","charm","chart","spark","scarf",
-      "mart","artist","garden","market","bar","bars","jar","far","tar","scar",
-      "lark","larks","stark","barked","parking"
-    ]).slice(0,45), "ar");
-
-    const WORDS_OR = make(uniq([
-      "for","fork","horn","corn","sort","sport","storm","short","born","torn",
-      "port","ports","porch","torch","form","forms","fort","forts","north","more",
-      "shore","store","snore","chore","score","floor","door","doors","roar","boar",
-      "soar","sore","core","cord","cords","lord","lords","orbit","order","orders",
-      "morning","stormy","sporty","torchlight","shoreline"
-    ]).slice(0,45), "or");
-
-    const WORDS_R3 = make(uniq([
-      "bird","birds","girl","girls","first","third","shirt","skirt","dirt","firm",
-      "stir","stirs","stirred","stirring","whirl","whirls","whirled","chirp","chirps","chirped",
-      "her","term","fern","perch","perched","verb","verbs","serve","served","serving",
-      "stern","kernel","person","perfect","teacher",
-      "fur","turn","turns","turned","turning","burn","burns","burned","burning","curl",
-      "curls","curled","hurt","hurts","hurting","surf","surfs","surfer","nurse","purple"
-    ]).slice(0,55), "ir/er/ur");
+    const WORDS_QU = make(uniq(["quiz","quit","quill","quick","quilt","quack","quench","queen","queens","quest","quiet","quite","quake","quakes","quaked","quaking","quote","quotes","quoted","quoting","quarter","quarters","quartz","quality","quantity","question","questions","request","requests","require","squeak","squeaks","squeaked","squeaking","squid","squids","squish","squishes","squished","squishing","equal","equals","equate","equator","sequence"]).slice(0,45), "qu");
+    const WORDS_AW = make(uniq(["saw","saws","sawed","sawing","raw","jaw","law","paw","claw","draw","straw","crawl","dawn","yawn","lawn","hawk","squawk","flaw","thaw","shawl","awful","awesome","awkward","lawful","drawn","drawer","jawbone","pawprint","claws","draws","drawing","thaws","lawns","hawks","flaws","paws","strawberry","withdraw"]).slice(0,40), "aw");
+    const WORDS_AL = make(uniq(["all","ball","call","fall","hall","mall","tall","wall","stall","small","walk","walks","walked","walking","talk","talks","talked","talking","chalk","chalks","chalked","chalky","stalk","stalks","stalked","stalking","balk","balks","balked","balking","calm","calms","calmed","calming","palm","palms","palmed","palming","half","halves"]).slice(0,40), "al");
+    const WORDS_AU = make(uniq(["haul","hauls","hauled","hauling","fault","faults","faulted","gaunt","haunt","haunts","haunted","haunting","cause","causes","caused","causing","pause","pauses","paused","pausing","sauce","sauces","launch","launches","launched","launching","author","authors","autumn","audit","audits","audited","audio","audience","August","auction","auctions","vault","vaults","vaulted"]).slice(0,40), "au");
+    const WORDS_OU = make(uniq(["out","outs","shout","shouts","shouted","shouting","loud","louder","loudest","cloud","clouds","cloudy","round","rounds","rounded","rounding","sound","sounds","sounded","sounding","found","count","counts","counted","counting","mount","mounts","mounted","mounting","house","houses","mouse","south","mouth","pound","pounds","pounded","pounding","ground","grounds","grounded","clown","crown","crowns","town","towns","browns","frowns"]).slice(0,45), "ou");
+    const WORDS_WR = make(uniq(["wrap","wraps","wrapped","wrapping","wreck","wrecks","wrecked","wrecking","wrist","wrists","write","writes","writing","writer","writers","wrong","wring","wrings","wrung","wringing","wrench","wrenches","wrenched","wrenching","wrinkle","wrinkles","wrinkled","wrinkling","wreath","wreaths","wrestle","wrestles","wrestled","wrestling","wrath","wry","wren","wrack","wretched","wraparound"]).slice(0,40), "wr");
+    const WORDS_PH = make(uniq(["phone","phones","phoned","phoning","photo","photos","photograph","photographs","graph","graphs","phrase","phrases","phonics","alphabet","elephant","dolphin","trophy","trophies","sphinx","pharmacy","physical","physics","philosophy","phase","phases","phoneme","phonetic","sapphire","nephew","triumph","pamphlet","symphony","sympathy","telephone","microphone","headphones","photobook","photoframe","graphing","graphic","photon","phony","phobia","phonology","phoned"]).slice(0,45), "ph");
+    const WORDS_KN = make(uniq(["knit","knits","knitted","knitting","knot","knots","knotted","knotting","knee","knees","kneel","kneels","kneeled","kneeling","knife","knives","knock","knocks","knocked","knocking","knob","knobs","knuckle","knuckles","knuckled","knuckling","knave","knaves","knell","knells","knelt","knight","knights","kneecap","kneecaps","knapsack","knapsacks","knotwork","knitwear","knocking"]).slice(0,40), "kn");
+    const WORDS_TH = make(uniq(["thin","thick","thank","think","thumb","thump","thud","thrush","thrift","thrive","three","throw","throws","throwing","thread","threads","threat","threats","throat","throats","bath","baths","path","paths","math","moth","moths","both","with","cloth","teeth","tooth","toothbrush","north","south","fourth","tenth","thirty","thirst","thirsty","thunder","thunders","theft","thorn","thorns"]).slice(0,45), "th");
+    const WORDS_NG = make(uniq(["ring","rings","ringing","king","kings","wing","wings","sing","sings","singing","thing","things","long","longer","longest","song","songs","bang","bangs","banging","hang","hangs","hanging","lung","lungs","hung","young","youngest","strong","stronger","string","strings","stringing","bring","brings","bringing","sling","slings","slinging","clang","clangs","clanging","sprang","spring","springs"]).slice(0,45), "ng");
+    const WORDS_SH = make(uniq(["ship","ships","shop","shops","shut","shuts","shell","shelf","shark","sharks","shake","shakes","shaking","shine","shines","shining","short","shirt","sharp","shape","sheep","sheet","sheets","fish","dish","wish","wishes","wished","wash","washes","washed","washing","brush","brushes","brushed","crash","crashes","crashed","flash","flashes","trash","splash","shower","shallow","shadow"]).slice(0,45), "sh");
+    const WORDS_CH = make(uniq(["chin","chat","chats","chip","chips","chop","chops","chopped","chopping","chess","check","checks","checked","checking","chicken","chickens","chair","chairs","cheer","cheers","cheered","cheering","cherry","cherries","cheese","chalk","chase","chases","chased","chasing","bench","benches","lunch","lunches","bunch","bunches","rich","much","such","pitch","match","matches","matched","matching","champ","chomp"]).slice(0,45), "ch");
+    const WORDS_WH = make(uniq(["what","when","where","which","while","white","whale","whales","wheel","wheels","whip","whips","whipped","whipping","whisk","whisks","whisked","whisking","whisper","whispers","whispered","whispering","whistle","whistles","whistled","whistling","whack","whacks","whacked","whacking","wheat","whenever","wherever","whatever","whichever","whim","whims","whimsy","whiny","whine","whines","whined","whining","wharf","wharfs"]).slice(0,45), "wh");
+    const WORDS_AR = make(uniq(["car","cars","card","cards","cart","carts","park","parks","part","parts","dark","darks","hard","harm","harp","bark","barn","farm","mark","march","start","star","stars","smart","shark","sharp","charm","chart","spark","scarf","mart","artist","garden","market","bar","bars","jar","far","tar","scar","lark","larks","stark","barked","parking"]).slice(0,45), "ar");
+    const WORDS_OR = make(uniq(["for","fork","horn","corn","sort","sport","storm","short","born","torn","port","ports","porch","torch","form","forms","fort","forts","north","more","shore","store","snore","chore","score","floor","door","doors","roar","boar","soar","sore","core","cord","cords","lord","lords","orbit","order","orders","morning","stormy","sporty","torchlight","shoreline"]).slice(0,45), "or");
 
     // ============================
-    // NEW: oo / ai / ay / igh / oa / ea / ew (REAL WORD LISTS)
-    // ============================
-    const WORDS_OO = make(uniq([
-      // /ʊ/ (book sound)
-      "book","books","cook","cooks","cooked","cooking","look","looks","looked","looking",
-      "good","wood","foot","hook","hooks","shook","took","brook","crook","stood",
-      "wool","coolish",
-      // /u:/ (moon sound)
-      "moon","moons","soon","noon","food","pool","school","scoot","spoon","spoons",
-      "room","rooms","boot","boots","goose","gooses","tooth","teeth","root","shoot",
-      "roof","proof","smooth","zoom","zoo","bloom","gloom","stoop","snoop","troop",
-      "droop","loop","loops","hoop","hoops","toot","coo","woo","kooky","cartoon"
-    ]).slice(0,45), "oo");
-
-    const WORDS_AI = make(uniq([
-      "rain","train","plain","snail","mail","tail","main","wait","paint","saint",
-      "brain","chain","chair","hair","fair","pair","stair","claim","bait","paid",
-      "laid","aim","sail","fail","hail","nail","rail","trail","grain","brainy",
-      "faint","taint","vain","sprain","strain","retain","detail","remain","explain","complain"
-    ]).slice(0,45), "ai");
-
-    const WORDS_AY = make(uniq([
-      "play","stay","say","day","may","pay","tray","gray","spray","delay",
-      "display","birthday","always","Sunday","holiday","today","yesterday","away","okay","relay",
-      "highway","subway","gateway","runway","weekday","daylight","mayday","payday","playground","staying",
-      "playing","saying","lay","laying","bay","hay","clay","ray","stray","okayish"
-    ]).slice(0,45), "ay");
-
-    const WORDS_IGH = make(uniq([
-      "high","sigh","night","light","right","fight","tight","might","bright","flight",
-      "sight","fright","slight","delight","midnight","moonlight","highlight","nightly","brighten","fighter",
-      "lighter","rightful","highway","highland","insight","upright","twilight","sunlight","alright","highness"
-    ]).slice(0,45), "igh");
-
-    const WORDS_OA = make(uniq([
-      "boat","goat","coat","float","toad","road","load","soap","soak","oak",
-      "oats","moat","roam","foam","goal","coal","loan","moan","groan","cloak",
-      "throat","toast","coast","roast","boast","coach","roach","approach","roadside","goatlike",
-      "boatman","oatmeal","coastal","loadable","loaf","loaves","snow","blow","grow","show"
-    ]).slice(0,45), "oa");
-
-    // ea (sounds like ee) — your request
-    const WORDS_EA = make(uniq([
-      "eat","meat","seat","team","sea","seal","mean","clean","dream","cream",
-      "leaf","leak","peak","beak","teach","reach","beach","each","peach","cheap",
-      "neat","heat","treat","street","between","green","queen","cheese","speak","leave",
-      "please","read","reader","reading","heal","heap","leap","bead","lead","meal"
-    ]).slice(0,45), "ea");
-
-    const WORDS_EW = make(uniq([
-      "new","few","chew","stew","blew","grew","threw","screw","flew","drew",
-      "brew","skew","renew","review","chewed","stewed","newest","fewest","chewer","stewpan",
-      "jewel","jewels","newborn","newly","interview","preview","renewed","news","newspaper","rewind",
-      "mew","pew","dewy","chewy","stewpot","skewer","crew","crews","chewable","renewable"
-    ]).slice(0,45), "ew");
-
-    // ============================
-    // GROUPS (PATTERNS MODE)
+    // GROUPS
     // ============================
     const GROUPS = [
-      // IMPORTANT: clicking CVC switches to LETTER MODE (not just selecting)
-      { key:"cvc", label:"CVC", words: WORDS_CVC },
-
-      { key:"a_e", label:"a_e", words: WORDS_AE, pseudoKey:"a_e" },
-      { key:"e_e", label:"e_e", words: WORDS_EE_SPLIT, pseudoKey:"e_e" },
-      { key:"i_e", label:"i_e", words: WORDS_IE_SPLIT, pseudoKey:"i_e" },
-      { key:"o_e", label:"o_e", words: WORDS_OE_SPLIT, pseudoKey:"o_e" },
-      { key:"u_e", label:"u_e", words: WORDS_UE_SPLIT, pseudoKey:"u_e" },
-
-      { key:"ee",  label:"ee",  words: WORDS_EE, pseudoKey:"ee" },
-      { key:"ie",  label:"ie",  words: WORDS_IE, pseudoKey:"ie" },
-      { key:"oe",  label:"oe",  words: WORDS_OE, pseudoKey:"oe" },
-      { key:"ue",  label:"ue",  words: WORDS_UE, pseudoKey:"ue" },
-
-      { key:"qu",  label:"qu",  words: WORDS_QU, pseudoKey:"qu" },
-
-      { key:"aw",  label:"aw",  words: WORDS_AW, pseudoKey:"aw" },
-      { key:"al",  label:"al",  words: WORDS_AL, pseudoKey:"al" },
-      { key:"au",  label:"au",  words: WORDS_AU, pseudoKey:"au" },
-      { key:"ou",  label:"ou",  words: WORDS_OU, pseudoKey:"ou" },
-
-      { key:"wr",  label:"wr",  words: WORDS_WR, pseudoKey:"wr" },
-      { key:"ph",  label:"ph",  words: WORDS_PH, pseudoKey:"ph" },
-      { key:"kn",  label:"kn",  words: WORDS_KN, pseudoKey:"kn" },
-
-      { key:"th",  label:"th",  words: WORDS_TH, pseudoKey:"th" },
-      { key:"ng",  label:"ng",  words: WORDS_NG, pseudoKey:"ng" },
-      { key:"sh",  label:"sh",  words: WORDS_SH, pseudoKey:"sh" },
-      { key:"ch",  label:"ch",  words: WORDS_CH, pseudoKey:"ch" },
-      { key:"wh",  label:"wh",  words: WORDS_WH, pseudoKey:"wh" },
-
-      { key:"ar",  label:"ar",  words: WORDS_AR, pseudoKey:"ar" },
-      { key:"or",  label:"or",  words: WORDS_OR, pseudoKey:"or" },
-      { key:"r3",  label:"ir/er/ur", words: WORDS_R3, pseudoKey:"r3" },
-
-      // NEW groups
-      { key:"ai",  label:"ai", words: WORDS_AI, pseudoKey:"ai" },
-      { key:"ay",  label:"ay", words: WORDS_AY, pseudoKey:"ay" },
-      { key:"igh", label:"igh", words: WORDS_IGH, pseudoKey:"igh" },
-      { key:"oa",  label:"oa", words: WORDS_OA, pseudoKey:"oa" },
-      { key:"ea",  label:"ea", words: WORDS_EA, pseudoKey:"ea" },
-      { key:"ew",  label:"ew", words: WORDS_EW, pseudoKey:"ew" },
-      { key:"oo",  label:"oo", words: WORDS_OO, pseudoKey:"oo" },
+      { key:"cvc", label:"CVC", words:WORDS_CVC },
+      { key:"a_e", label:"a_e", words:WORDS_AE, pseudoKey:"a_e" },
+      { key:"e_e", label:"e_e", words:WORDS_EE_SPLIT, pseudoKey:"e_e" },
+      { key:"i_e", label:"i_e", words:WORDS_IE_SPLIT, pseudoKey:"i_e" },
+      { key:"o_e", label:"o_e", words:WORDS_OE_SPLIT, pseudoKey:"o_e" },
+      { key:"u_e", label:"u_e", words:WORDS_UE_SPLIT, pseudoKey:"u_e" },
+      { key:"ee", label:"ee", words:WORDS_EE, pseudoKey:"ee" },
+      { key:"ie", label:"ie", words:WORDS_IE, pseudoKey:"ie" },
+      { key:"oe", label:"oe", words:WORDS_OE, pseudoKey:"oe" },
+      { key:"ue", label:"ue", words:WORDS_UE, pseudoKey:"ue" },
+      { key:"ai", label:"ai", words:WORDS_AI, pseudoKey:"ai" },
+      { key:"ay", label:"ay", words:WORDS_AY, pseudoKey:"ay" },
+      { key:"igh", label:"igh", words:WORDS_IGH, pseudoKey:"igh" },
+      { key:"oa", label:"oa", words:WORDS_OA, pseudoKey:"oa" },
+      { key:"ea", label:"ea (ee)", words:WORDS_EA_EE, pseudoKey:"ea" },
+      { key:"ew", label:"ew", words:WORDS_EW, pseudoKey:"ew" },
+      { key:"oo", label:"oo", words:WORDS_OO, pseudoKey:"oo" },
+      { key:"ir", label:"ir", words:WORDS_IR, pseudoKey:"ir" },
+      { key:"ur", label:"ur", words:WORDS_UR, pseudoKey:"ur" },
+      { key:"er", label:"er", words:WORDS_ER, pseudoKey:"er" },
+      { key:"qu", label:"qu", words:WORDS_QU, pseudoKey:"qu" },
+      { key:"aw", label:"aw", words:WORDS_AW, pseudoKey:"aw" },
+      { key:"al", label:"al", words:WORDS_AL, pseudoKey:"al" },
+      { key:"au", label:"au", words:WORDS_AU, pseudoKey:"au" },
+      { key:"ou", label:"ou", words:WORDS_OU, pseudoKey:"ou" },
+      { key:"wr", label:"wr", words:WORDS_WR, pseudoKey:"wr" },
+      { key:"ph", label:"ph", words:WORDS_PH, pseudoKey:"ph" },
+      { key:"kn", label:"kn", words:WORDS_KN, pseudoKey:"kn" },
+      { key:"th", label:"th", words:WORDS_TH, pseudoKey:"th" },
+      { key:"ng", label:"ng", words:WORDS_NG, pseudoKey:"ng" },
+      { key:"sh", label:"sh", words:WORDS_SH, pseudoKey:"sh" },
+      { key:"ch", label:"ch", words:WORDS_CH, pseudoKey:"ch" },
+      { key:"wh", label:"wh", words:WORDS_WH, pseudoKey:"wh" },
+      { key:"ar", label:"ar", words:WORDS_AR, pseudoKey:"ar" },
+      { key:"or", label:"or", words:WORDS_OR, pseudoKey:"or" }
     ];
 
-    // Default: NONE selected
     const selectedGroups = new Set();
-
-    // ============================
-    // LETTER MODE (order from PDF pages 1–4)
-    // source: Genki Phonics Minicards PDF :contentReference[oaicite:0]{index=0}
-    // ============================
-    const LETTER_TILES = [
-      // page 1
-      {k:"s",  t:"C"}, {k:"i", t:"V"}, {k:"t", t:"C"}, {k:"p", t:"C"},
-      {k:"a",  t:"V"}, {k:"n", t:"C"}, {k:"m", t:"C"}, {k:"d", t:"C"},
-      {k:"g",  t:"C"}, {k:"o", t:"V"}, {k:"c", t:"C"}, {k:"k", t:"C"},
-      {k:"e",  t:"V"}, {k:"u", t:"V"}, {k:"r", t:"C"}, {k:"h", t:"C"},
-      // page 2
-      {k:"b",  t:"C"}, {k:"f", t:"C"}, {k:"l", t:"C"}, {k:"j", t:"C"},
-      {k:"v",  t:"C"}, {k:"w", t:"C"}, {k:"x", t:"C"}, {k:"y", t:"V"}, // y can be vowel-ish
-      {k:"z",  t:"C"}, {k:"qu",t:"C"}, {k:"ch",t:"C"}, {k:"sh",t:"C"},
-      {k:"th", t:"C"}, {k:"th2",t:"C", label:"th"}, {k:"ng",t:"C"}, {k:"ai",t:"V"},
-      // page 3
-      {k:"ee", t:"V"}, {k:"igh",t:"V"}, {k:"oa",t:"V"}, {k:"oo",t:"V"},
-      {k:"ar", t:"V"}, {k:"or",t:"V"}, {k:"ur",t:"V"}, {k:"ow",t:"V"},
-      {k:"oi", t:"V"}, {k:"ear",t:"V"}, {k:"air",t:"V"}, {k:"er",t:"V"},
-      {k:"ure",t:"V"}, {k:"ph",t:"C"}, {k:"wh",t:"C"}, {k:"wr",t:"C"},
-      // page 4 (includes some repeats / review tiles; kept in the same order)
-      {k:"le", t:"E"}, {k:"ea",t:"V"}, {k:"ay",t:"V"}, {k:"a_e",t:"V"},
-      {k:"ie", t:"V"}, {k:"i_e",t:"V"}, {k:"o_e",t:"V"}, {k:"ew",t:"V"},
-      {k:"u_e",t:"V"}, {k:"aw",t:"V"}, {k:"ou",t:"V"}
-    ];
-
-    // In letter mode we pick "chunks" from selectedLetters and build pseudo-words.
+    let singleSoundsMode = false;
     const selectedLetters = new Set();
 
-    // ============================
-    // DOM
-    // ============================
     const els = {
-      title: document.getElementById('title'),
-      patternsLabel: document.getElementById('patternsLabel'),
-      duration: document.getElementById('duration'),
-      startBtn: document.getElementById('startBtn'),
-      resetBtn: document.getElementById('resetBtn'),
-      rightBtn: document.getElementById('rightBtn'),
-      wrongBtn: document.getElementById('wrongBtn'),
-      word: document.getElementById('word'),
-      wordBox: document.getElementById('wordBox'),
-      patternHint: document.getElementById('patternHint'),
-      log: document.getElementById('log'),
-      score: document.getElementById('score'),
-      rightCount: document.getElementById('rightCount'),
-      wrongCount: document.getElementById('wrongCount'),
-      timeLeft: document.getElementById('timeLeft'),
-      bar: document.getElementById('bar'),
-      toggles: document.getElementById('patternToggles'),
+      duration:document.getElementById('duration'),
+      startBtn:document.getElementById('startBtn'),
+      resetBtn:document.getElementById('resetBtn'),
+      rightBtn:document.getElementById('rightBtn'),
+      wrongBtn:document.getElementById('wrongBtn'),
+      word:document.getElementById('word'),
+      wordBox:document.getElementById('wordBox'),
+      patternHint:document.getElementById('patternHint'),
+      log:document.getElementById('log'),
+      score:document.getElementById('score'),
+      rightCount:document.getElementById('rightCount'),
+      wrongCount:document.getElementById('wrongCount'),
+      timeLeft:document.getElementById('timeLeft'),
+      bar:document.getElementById('bar'),
+      toggles:document.getElementById('patternToggles')
     };
 
-    // ============================
-    // STATE
-    // ============================
-    let running = false;
-    let paused = false;
-    let t = null;
-    let totalSeconds = 60;
-    let remaining = 60;
-
-    let current = null;      // {w,p}
-    let lastWord = "";
-
-    let score = 0;
-    let rightCount = 0;
-    let wrongCount = 0;
-
-    // ============================
-    // DECK (no repeats until all used)
-    // ============================
-    let deck = [];
-    let lastDeckKey = "";
+    let running=false, paused=false, t=null, totalSeconds=60, remaining=60;
+    let current=null, lastWord="";
+    let score=0, rightCount=0, wrongCount=0;
+    let deck=[], lastDeckKey="";
 
     function buildDeckKey(){
-      if (mode === "letters") return "letters|" + [...selectedLetters].sort().join("|");
-      return "patterns|" + [...selectedGroups].sort().join("|");
+      return [...selectedGroups].sort().join("|") + "::" + [...selectedLetters].sort().join("");
     }
 
-    function rebuildDeck(force = false){
-      const k = buildDeckKey();
-      if (!force && k === lastDeckKey && deck.length) return;
-
-      const pool = (mode === "letters") ? getLetterPool() : getActivePool();
-      deck = shuffle(pool.slice());
-      lastDeckKey = k;
+    function rebuildDeck(force=false){
+      const k=buildDeckKey();
+      if(!force && k===lastDeckKey && deck.length) return;
+      const pool=getActivePool();
+      deck=shuffle(pool.slice());
+      lastDeckKey=k;
     }
 
-    // ============================
-    // POOL (PATTERNS MODE)
-    // ============================
-    function getActivePool(){
-      const pool = [];
-      const keys = [...selectedGroups];
-      const soloKey = (keys.length === 1) ? keys[0] : null;
+    function renderToggles(){
+      els.toggles.innerHTML="";
+
+      const mkBtn=(text, cls, onClick)=>{
+        const b=document.createElement('button');
+        b.type="button";
+        b.className=`toggle ${cls || ""}`.trim();
+        b.textContent=text;
+        b.addEventListener('click', onClick);
+        return b;
+      };
+
+      const afterChange=()=>rebuildDeck(true);
+
+      if(singleSoundsMode){
+        els.toggles.appendChild(mkBtn("BACK", "util", ()=>{
+          singleSoundsMode=false;
+          selectedLetters.clear();
+          selectedGroups.delete("cvc");
+          renderToggles();
+          afterChange();
+        }));
+
+        els.toggles.appendChild(mkBtn("ALL LETTERS", "util", ()=>{
+          SINGLE_SOUNDS_ORDER.forEach(l=>selectedLetters.add(l));
+          selectedGroups.add("cvc");
+          renderToggles();
+          afterChange();
+        }));
+
+        els.toggles.appendChild(mkBtn("NONE", "util", ()=>{
+          selectedLetters.clear();
+          selectedGroups.delete("cvc");
+          renderToggles();
+          afterChange();
+        }));
+
+        SINGLE_SOUNDS_ORDER.forEach(letter=>{
+          const on=selectedLetters.has(letter);
+          els.toggles.appendChild(mkBtn(letter, on ? "on" : "", ()=>{
+            if(selectedLetters.has(letter)) selectedLetters.delete(letter);
+            else selectedLetters.add(letter);
+
+            if(selectedLetters.size) selectedGroups.add("cvc");
+            else selectedGroups.delete("cvc");
+
+            renderToggles();
+            afterChange();
+          }));
+        });
+        return;
+      }
+
+      els.toggles.appendChild(mkBtn("ALL", "util", ()=>{
+        GROUPS.forEach(g=>selectedGroups.add(g.key));
+        SINGLE_SOUNDS_ORDER.forEach(l=>selectedLetters.add(l));
+        renderToggles();
+        afterChange();
+      }));
+
+      els.toggles.appendChild(mkBtn("NONE", "util", ()=>{
+        selectedGroups.clear();
+        selectedLetters.clear();
+        renderToggles();
+        afterChange();
+      }));
 
       GROUPS.forEach(g=>{
-        if (!selectedGroups.has(g.key)) return;
+        const on=selectedGroups.has(g.key);
+        els.toggles.appendChild(mkBtn(g.label, on ? "on" : "", ()=>{
+          if(g.key === "cvc"){
+            singleSoundsMode=true;
+            renderToggles();
+            afterChange();
+            return;
+          }
+          if(selectedGroups.has(g.key)) selectedGroups.delete(g.key);
+          else selectedGroups.add(g.key);
+          renderToggles();
+          afterChange();
+        }));
+      });
+    }
 
-        // real words + mark origin group key
-        pool.push(...g.words.map(obj => ({ ...obj, __groupKey: g.key })));
+    function usesOnlySelectedLetters(word){
+      if(!selectedLetters.size) return false;
+      const clean=String(word).toLowerCase().replace(/[^a-z]/g, "");
+      if(!clean) return false;
+      return [...clean].every(ch=>selectedLetters.has(ch));
+    }
 
-        // pseudo only when exactly ONE selected group, and it has pseudoKey, and it's not CVC
-        if (
-          soloKey &&
-          g.key === soloKey &&
-          g.key !== "cvc" &&
-          g.pseudoKey &&
-          Array.isArray(PSEUDO[g.pseudoKey]) &&
-          PSEUDO[g.pseudoKey].length
-        ){
-          pool.push(
-            ...make(PSEUDO[g.pseudoKey], `${g.label} (pseudo)`)
-              .map(obj => ({ ...obj, __groupKey: g.key }))
-          );
+    function getActivePool(){
+      const pool=[];
+      const keys=[...selectedGroups];
+      const soloKey=(keys.length===1) ? keys[0] : null;
+
+      GROUPS.forEach(g=>{
+        if(!selectedGroups.has(g.key)) return;
+
+        let groupWords=g.words.map(obj=>({...obj, __groupKey:g.key}));
+
+        if(g.key === "cvc"){
+          groupWords=groupWords.filter(obj=>usesOnlySelectedLetters(obj.w));
+        }
+
+        pool.push(...groupWords);
+
+        if(soloKey && g.key===soloKey && g.key!=="cvc" && g.pseudoKey && Array.isArray(PSEUDO[g.pseudoKey]) && PSEUDO[g.pseudoKey].length){
+          pool.push(...make(PSEUDO[g.pseudoKey], `${g.label} (pseudo)`).map(obj=>({...obj, __groupKey:g.key})));
         }
       });
 
-      // hard filter: no extra patterns allowed
-      return pool.filter(wObj => isAllowedWord(wObj, selectedGroups));
+      return pool.filter(wObj=>isAllowedWord(wObj, selectedGroups));
     }
 
-    // ============================
-    // LETTER MODE POOL
-    // ============================
-    // Build pseudo-words from selected letter/sound chunks.
-    function getLetterPool(){
-      const picked = [...selectedLetters];
-      if (!picked.length) return [];
-
-      // map th2 -> th (display), but keep key in selection
-      const normalizeChunk = (c) => (c === "th2" ? "th" : c);
-
-      const consonants = picked
-        .filter(k => (LETTER_TILES.find(t => t.k === k)?.t === "C"))
-        .map(normalizeChunk);
-
-      const vowels = picked
-        .filter(k => {
-          const t = LETTER_TILES.find(x => x.k === k)?.t;
-          return t === "V";
-        })
-        .map(normalizeChunk);
-
-      const endings = picked
-        .filter(k => (LETTER_TILES.find(t => t.k === k)?.t === "E"))
-        .map(normalizeChunk);
-
-      // If user only selects one chunk: show that chunk (for practice)
-      if (picked.length === 1){
-        const one = normalizeChunk(picked[0]);
-        return [{ w: one, p: `Letters: ${one}` }];
-      }
-
-      // Generate a reasonable batch of pseudo-words (no meaning needed)
-      const out = [];
-      const want = 80;
-
-      // helper random
-      const r = (arr) => arr[Math.floor(Math.random()*arr.length)];
-
-      // cases:
-      // - if we have vowels + consonants -> build CVC-ish: C + V + C (or V + C, C + V, etc.)
-      // - if only vowels -> return random vowel combos (2 chunks)
-      // - if only consonants -> return random consonant combos (2–3 chunks)
-      const addUnique = (w) => {
-        if (!out.some(x => x.w === w)) out.push({ w, p: "Letters (pseudo)" });
-      };
-
-      if (vowels.length && consonants.length){
-        let guard = 0;
-        while (out.length < want && guard < 2000){
-          guard++;
-          const onset = r(consonants);
-          const nucleus = r(vowels);
-          const codaChoice = Math.random() < 0.7 ? r(consonants) : "";
-          const end = endings.length && Math.random() < 0.25 ? r(endings) : "";
-
-          // avoid weird "qu" without vowel: here nucleus exists so it's ok.
-          let word = (onset + nucleus + codaChoice + end).replace(/\s+/g,"");
-          // basic cleanup: don't allow triple same chunk repeated
-          if (/(.)\1\1/.test(word)) continue;
-          addUnique(word);
-        }
-      } else if (vowels.length && !consonants.length){
-        let guard = 0;
-        while (out.length < Math.min(want, 60) && guard < 1200){
-          guard++;
-          const a = r(vowels);
-          const b = r(vowels);
-          if (a === b) continue;
-          addUnique(a + b);
-        }
-      } else {
-        // consonants only
-        let guard = 0;
-        while (out.length < Math.min(want, 60) && guard < 1200){
-          guard++;
-          const a = r(consonants);
-          const b = r(consonants);
-          const c = Math.random() < 0.4 ? r(consonants) : "";
-          if (a === b) continue;
-          addUnique(a + b + c);
-        }
-      }
-
-      return out;
-    }
-
-    // ============================
-    // GAME HELPERS
-    // ============================
     function setButtonsEnabled(on){
-      const cls = 'disabled';
-      els.rightBtn.classList.toggle(cls, !on);
-      els.wrongBtn.classList.toggle(cls, !on);
+      els.rightBtn.classList.toggle('disabled', !on);
+      els.wrongBtn.classList.toggle('disabled', !on);
     }
 
     function fmtTime(s){
-      const mm = Math.floor(s/60);
-      const ss = s%60;
-      if (mm <= 0) return `${ss}s`;
+      const mm=Math.floor(s/60), ss=s%60;
+      if(mm<=0) return `${ss}s`;
       return `${mm}:${String(ss).padStart(2,'0')}`;
     }
 
-    // ✅ NO REPEATS until all words in the selected combo are used
     function chooseNextWord(){
-      if (!deck.length){
+      if(!deck.length){
         rebuildDeck(true);
-        if (!deck.length) return { w: (mode === "letters" ? "Select letters" : "Select patterns"), p: "—" };
+        if(!deck.length) return {w:"Select patterns", p:"—"};
       }
-
-      let pick = deck.pop();
-
-      // prevent immediate back-to-back repeat on boundary
-      if (pick && pick.w === lastWord && deck.length){
-        const pick2 = deck.pop();
+      let pick=deck.pop();
+      if(pick && pick.w===lastWord && deck.length){
+        const pick2=deck.pop();
         deck.unshift(pick);
-        pick = pick2;
+        pick=pick2;
       }
-
-      lastWord = pick.w;
+      lastWord=pick.w;
       return pick;
     }
 
     function showWord(obj){
-      current = obj;
+      current=obj;
       els.wordBox.classList.remove('flash');
       void els.wordBox.offsetWidth;
-      els.word.textContent = obj.w;
-      els.patternHint.textContent = `Pattern: ${obj.p}`;
+      els.word.textContent=obj.w;
+      els.patternHint.textContent=`Pattern: ${obj.p}`;
       els.wordBox.classList.add('flash');
     }
 
     function addLogItem(word, ok){
-      const li = document.createElement('li');
-      li.className = ok ? 'ok' : 'no';
-
-      const left = document.createElement('div');
-      left.textContent = word;
-
-      const tag = document.createElement('div');
-      tag.className = `tag ${ok ? 'ok' : 'no'}`;
-      tag.textContent = ok ? 'RIGHT' : 'WRONG';
-
+      const li=document.createElement('li');
+      li.className=ok ? 'ok' : 'no';
+      const left=document.createElement('div');
+      left.textContent=word;
+      const tag=document.createElement('div');
+      tag.className=`tag ${ok ? 'ok' : 'no'}`;
+      tag.textContent=ok ? 'RIGHT' : 'WRONG';
       li.appendChild(left);
       li.appendChild(tag);
       els.log.prepend(li);
     }
 
     function updateStats(){
-      els.score.textContent = String(score);
-      els.rightCount.textContent = String(rightCount);
-      els.wrongCount.textContent = String(wrongCount);
-      els.timeLeft.textContent = running ? fmtTime(remaining) : '—';
-
-      const pct = totalSeconds > 0 ? ((totalSeconds - remaining) / totalSeconds) * 100 : 0;
-      els.bar.style.width = `${Math.min(100, Math.max(0, pct))}%`;
+      els.score.textContent=String(score);
+      els.rightCount.textContent=String(rightCount);
+      els.wrongCount.textContent=String(wrongCount);
+      els.timeLeft.textContent=running ? fmtTime(remaining) : '—';
+      const pct=totalSeconds>0 ? ((totalSeconds-remaining)/totalSeconds)*100 : 0;
+      els.bar.style.width=`${Math.min(100, Math.max(0, pct))}%`;
     }
 
     function endGame(){
-      running = false;
-      paused = false;
+      running=false;
+      paused=false;
       clearInterval(t);
-      t = null;
+      t=null;
       setButtonsEnabled(false);
-      els.startBtn.textContent = 'Start';
-      els.word.textContent = "Time's up!";
-      els.patternHint.textContent = 'Pattern: —';
+      els.startBtn.textContent='Start';
+      els.word.textContent="Time's up!";
+      els.patternHint.textContent='Pattern: —';
       els.wordBox.classList.add('idle');
       updateStats();
     }
 
     function tick(){
-      if (!running || paused) return;
-      remaining -= 1;
-      if (remaining <= 0){
-        remaining = 0;
+      if(!running || paused) return;
+      remaining-=1;
+      if(remaining<=0){
+        remaining=0;
         updateStats();
         endGame();
         return;
@@ -1280,222 +641,78 @@
       updateStats();
     }
 
-    // ============================
-    // UI: TOGGLES (PATTERNS vs LETTERS)
-    // ============================
-    function setMode(newMode){
-      mode = newMode;
-
-      // stop game immediately so UI is not confusing
-      running = false;
-      paused = false;
-      clearInterval(t);
-      t = null;
-
-      deck = [];
-      lastDeckKey = "";
-      current = null;
-      lastWord = "";
-
-      els.log.innerHTML = '';
-      els.word.textContent = 'Press Start';
-      els.wordBox.classList.add('idle');
-      els.patternHint.textContent = 'Pattern: —';
-      els.startBtn.textContent = 'Start';
-      setButtonsEnabled(false);
-      els.bar.style.width = '0%';
-      els.timeLeft.textContent = '—';
-      updateStats();
-
-      renderToggles();
-    }
-
-    function renderToggles(){
-      els.toggles.innerHTML = "";
-
-      const mkBtn = (text, cls, onClick) => {
-        const b = document.createElement('button');
-        b.type = "button";
-        b.className = `toggle ${cls || ""}`.trim();
-        b.textContent = text;
-        b.addEventListener('click', onClick);
-        return b;
-      };
-
-      if (mode === "patterns"){
-        els.title.textContent = "Reading: Right or Wrong";
-        els.patternsLabel.textContent = "Patterns";
-
-        const afterChange = () => {
-          rebuildDeck(true);
-        };
-
-        // ALL / NONE
-        els.toggles.appendChild(mkBtn("ALL", "util", () => {
-          selectedGroups.clear();
-          GROUPS.forEach(g => selectedGroups.add(g.key));
-          renderToggles();
-          afterChange();
-        }));
-
-        els.toggles.appendChild(mkBtn("NONE", "util", () => {
-          selectedGroups.clear();
-          renderToggles();
-          afterChange();
-        }));
-
-        GROUPS.forEach(g=>{
-          const on = selectedGroups.has(g.key);
-
-          // SPECIAL: CVC -> switch to LETTER MODE (as you asked)
-          if (g.key === "cvc"){
-            els.toggles.appendChild(mkBtn("CVC → Letters", "util", () => {
-              // keep patterns as-is; switch mode
-              selectedLetters.clear();
-              setMode("letters");
-            }));
-            return;
-          }
-
-          els.toggles.appendChild(mkBtn(g.label, on ? "on" : "", () => {
-            if (selectedGroups.has(g.key)) selectedGroups.delete(g.key);
-            else selectedGroups.add(g.key);
-            renderToggles();
-            afterChange();
-          }));
-        });
-
-        return;
-      }
-
-      // LETTER MODE
-      els.title.textContent = "CVC Letters Mode";
-      els.patternsLabel.textContent = "Letters / Sounds";
-
-      // top util row
-      els.toggles.appendChild(mkBtn("← Back", "util", () => {
-        setMode("patterns");
-      }));
-
-      els.toggles.appendChild(mkBtn("ALL", "util", () => {
-        selectedLetters.clear();
-        LETTER_TILES.forEach(t => selectedLetters.add(t.k));
-        renderToggles();
-        rebuildDeck(true);
-      }));
-
-      els.toggles.appendChild(mkBtn("NONE", "util", () => {
-        selectedLetters.clear();
-        renderToggles();
-        rebuildDeck(true);
-      }));
-
-      // tiles in the exact order from the PDF pages 1–4 :contentReference[oaicite:1]{index=1}
-      LETTER_TILES.forEach(t=>{
-        const label = t.label || t.k;
-        const on = selectedLetters.has(t.k);
-        els.toggles.appendChild(mkBtn(label, on ? "on" : "", () => {
-          if (selectedLetters.has(t.k)) selectedLetters.delete(t.k);
-          else selectedLetters.add(t.k);
-          renderToggles();
-          rebuildDeck(true);
-        }));
-      });
-    }
-
-    // ============================
-    // GAME CONTROL
-    // ============================
     function startGame(){
       rebuildDeck(true);
-
-      if (!deck.length){
-        els.word.textContent = (mode === "letters") ? "Select letters" : "Select patterns";
-        els.patternHint.textContent = "Pattern: —";
+      if(!deck.length){
+        els.word.textContent="Select patterns";
+        els.patternHint.textContent="Pattern: —";
         els.wordBox.classList.add('idle');
         setButtonsEnabled(false);
-        els.startBtn.textContent = 'Start';
-        running = false;
-        paused = false;
+        els.startBtn.textContent='Start';
+        running=false;
+        paused=false;
         updateStats();
         return;
       }
 
       els.wordBox.classList.remove('idle');
-
-      totalSeconds = Number(els.duration.value);
-      remaining = totalSeconds;
-      running = true;
-      paused = false;
-
-      score = 0;
-      rightCount = 0;
-      wrongCount = 0;
-      lastWord = "";
-      els.log.innerHTML = '';
-
-      // new round = new deck (no repeats until exhausted)
+      totalSeconds=Number(els.duration.value);
+      remaining=totalSeconds;
+      running=true;
+      paused=false;
+      score=0;
+      rightCount=0;
+      wrongCount=0;
+      lastWord="";
+      els.log.innerHTML='';
       rebuildDeck(true);
-
       setButtonsEnabled(true);
-      els.startBtn.textContent = 'Pause';
-
+      els.startBtn.textContent='Pause';
       showWord(chooseNextWord());
       updateStats();
-
       clearInterval(t);
-      t = setInterval(tick, 1000);
+      t=setInterval(tick, 1000);
     }
 
     function togglePause(){
-      if (!running){
+      if(!running){
         startGame();
         return;
       }
-      paused = !paused;
-      els.startBtn.textContent = paused ? 'Resume' : 'Pause';
-      els.word.textContent = paused ? 'Paused' : (current?.w ?? '—');
+      paused=!paused;
+      els.startBtn.textContent=paused ? 'Resume' : 'Pause';
+      els.word.textContent=paused ? 'Paused' : (current?.w ?? '—');
       updateStats();
     }
 
     function resetAll(){
-      running = false;
-      paused = false;
+      running=false;
+      paused=false;
       clearInterval(t);
-      t = null;
-
-      score = 0;
-      rightCount = 0;
-      wrongCount = 0;
-      lastWord = "";
-      current = null;
-
-      deck = [];
-      lastDeckKey = "";
-
-      els.log.innerHTML = '';
-      els.word.textContent = 'Press Start';
+      t=null;
+      score=0;
+      rightCount=0;
+      wrongCount=0;
+      lastWord="";
+      current=null;
+      deck=[];
+      lastDeckKey="";
+      els.log.innerHTML='';
+      els.word.textContent='Press Start';
       els.wordBox.classList.add('idle');
-      els.patternHint.textContent = 'Pattern: —';
-      els.startBtn.textContent = 'Start';
+      els.patternHint.textContent='Pattern: —';
+      els.startBtn.textContent='Start';
       setButtonsEnabled(false);
-      els.bar.style.width = '0%';
-      els.timeLeft.textContent = '—';
+      els.bar.style.width='0%';
+      els.timeLeft.textContent='—';
       updateStats();
     }
 
     function answer(ok){
-      if (!running || paused || !current) return;
-
+      if(!running || paused || !current) return;
       addLogItem(current.w, ok);
-
-      if (ok){
-        rightCount += 1;
-        score += 1;
-      } else {
-        wrongCount += 1;
-      }
-
+      if(ok){ rightCount+=1; score+=1; }
+      else wrongCount+=1;
       showWord(chooseNextWord());
       updateStats();
     }
@@ -1503,23 +720,20 @@
     // ============================
     // SNOW
     // ============================
-    const snow = document.querySelector('.snow');
-    const FLAKES = 60;
-
+    const snow=document.querySelector('.snow');
+    const FLAKES=60;
     for(let i=0;i<FLAKES;i++){
-      const f = document.createElement('span');
-      const size = Math.random()*8 + 6;
-      const x = Math.random()*100;
-      const dur = Math.random()*8 + 7;
-      const delay = -Math.random()*dur;
-      const opacity = Math.random()*0.35 + 0.65;
-
-      f.style.setProperty('--s', size + 'px');
-      f.style.setProperty('--x', x + 'vw');
-      f.style.setProperty('--d', dur + 's');
+      const f=document.createElement('span');
+      const size=Math.random()*8+6;
+      const x=Math.random()*100;
+      const dur=Math.random()*8+7;
+      const delay=-Math.random()*dur;
+      const opacity=Math.random()*0.35+0.65;
+      f.style.setProperty('--s', size+'px');
+      f.style.setProperty('--x', x+'vw');
+      f.style.setProperty('--d', dur+'s');
       f.style.setProperty('--o', opacity);
-      f.style.animationDelay = delay + 's';
-
+      f.style.animationDelay=delay+'s';
       snow.appendChild(f);
     }
 
@@ -1528,19 +742,18 @@
     // ============================
     els.startBtn.addEventListener('click', togglePause);
     els.resetBtn.addEventListener('click', resetAll);
-    els.rightBtn.addEventListener('click', () => answer(true));
-    els.wrongBtn.addEventListener('click', () => answer(false));
+    els.rightBtn.addEventListener('click', ()=>answer(true));
+    els.wrongBtn.addEventListener('click', ()=>answer(false));
 
-    window.addEventListener('keydown', (e) => {
-      if (e.code === 'Space'){
+    window.addEventListener('keydown', (e)=>{
+      if(e.code==='Space'){
         e.preventDefault();
         togglePause();
       }
-      if (e.key.toLowerCase() === 'r') answer(true);
-      if (e.key.toLowerCase() === 'w') answer(false);
+      if(e.key.toLowerCase()==='r') answer(true);
+      if(e.key.toLowerCase()==='w') answer(false);
     });
 
-    // INIT
     renderToggles();
     resetAll();
   </script>
